@@ -10,22 +10,64 @@
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottieAnimationView"
-        layout_centeterInParents="true"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        cropToFrame="true"
+        layout_centeterInParent="true"
+        android:layout_width="279dp"
+        android:layout_height="134dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="64dp"
         android:layout_marginEnd="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:elevation="50dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.5"
+        app:layout_constraintHorizontal_bias="0.321"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.5"
-        app:layout_constraintHeight_percent="0.5"
-        android:elevation="10dp"
         app:lottie_autoPlay="true"
-        app:lottie_loop="true"
-        app:lottie_rawRes="@raw/meal"
+        app:lottie_loop="false"
+        app:lottie_rawRes="@raw/animation2"
         app:lottie_speed="1.2" />
+
+    <TextView
+        android:id="@+id/dishdash_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="112dp"
+        android:layout_marginTop="13dp"
+        android:fontFamily="@font/league_spartan_bold"
+        android:text="DISHDASH"
+        android:textColor="@color/secondary"
+        android:textSize="40sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lottieAnimationView" />
+
+    <TextView
+        android:id="@+id/meal_mate_text"
+        android:layout_width="191dp"
+        android:layout_height="35dp"
+        android:layout_below="@id/dishdash_text"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="108dp"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/arimo_semibold"
+        android:text=""
+        android:textColor="@color/black"
+        android:textSize="16.5sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dishdash_text" />
+
+    <ImageView
+        android:id="@+id/vectorImageView"
+        android:layout_width="29dp"
+        android:layout_height="43dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="204dp"
+        android:src="@drawable/green_grass"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/dishdash_text"
+        app:layout_constraintStart_toStartOf="@+id/lottieAnimationView" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
