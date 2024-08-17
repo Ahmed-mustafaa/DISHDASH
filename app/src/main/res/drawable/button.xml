@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Pressed State -->
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <!-- Pressed Color -->
+            <solid android:color="@color/secondary" />
+            <!-- Rounded Corners -->
+            <corners android:radius="24dp" />
+            <!-- Add Stroke -->
+            <stroke
+                android:width="2dp"
+                android:color="@color/primaryDark" />
+            <!-- Add Shadow -->
+            <padding android:top="4dp" android:left="4dp" android:right="4dp" android:bottom="4dp"/>
+        </shape>
+    </item>
+
+    <!-- Default State -->
+    <item>
+        <shape android:shape="rectangle">
+            <!-- Gradient Background -->
+            <gradient
+                android:startColor="@color/secondary"
+                android:centerColor="@color/primaryDark"
+                android:endColor="@color/secondary"
+                android:angle="45" />
+            <!-- Rounded Corners -->
+            <corners android:radius="24dp" />
+            <!-- Add Stroke -->
+            <stroke
+                android:width="2dp"
+                android:color="@color/black" />
+            <!-- Add Shadow -->
+            <padding android:top="6dp" android:left="6dp" android:right="6dp" android:bottom="6dp"/>
+            <!-- Inner Shadow -->
+            <innerRadius android:radius="20dp" />
+        </shape>
+    </item>
+</selector>
