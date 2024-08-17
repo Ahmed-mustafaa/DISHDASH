@@ -80,6 +80,6 @@ LottieAnimationView lottie;
                     finish();
                 }
                     },1000);
-            }, 6000);
+            }, 1000);
         }
     }

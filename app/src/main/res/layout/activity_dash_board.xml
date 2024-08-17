@@ -8,7 +8,26 @@
     android:layout_height="match_parent"
     tools:context=".view.DashBoardActivity">
 
-
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieProgress"
+        cropToFrame="true"
+        layout_centeterInParent="true"
+        android:layout_width="279dp"
+        android:layout_height="134dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="16dp"
+        android:elevation="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.5"
+        app:layout_constraintHorizontal_bias="0.321"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.5"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="false"
+        app:lottie_rawRes="@raw/progressmeals"
+        app:lottie_speed="1.2" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
 
@@ -51,6 +70,16 @@
                 android:layout_marginStart="50dp"
                 android:paddingLeft="20dp"
                 android:text="Hello,Guest"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+            <TextView
+                android:id="@+id/HowIsItGOing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="30dp"
+                android:paddingLeft="20dp"
+                android:text="How is it going ? "
                 android:textColor="@color/black"
                 android:textSize="18sp" />
 

@@ -1,12 +1,17 @@
 package com.example.dishdash.view;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.example.dishdash.NetworkCall.MealsRemoteDataSourceImpl;
 import com.example.dishdash.R;
@@ -21,16 +26,67 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
     private ImageView avatarImageView;
     private TextView mealName;
     private TextView mealDescription;
+    private TextView greeting;
+    private TextView howIsItGoing;
+    TextView todaysMeals;
     private ImageView mealImage;
     private MealsPresenter presenter;
+    CardView cardView;
+    LottieAnimationView progress;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash_board);
+        greeting = findViewById(R.id.user_greeting);
+        howIsItGoing = findViewById(R.id.HowIsItGOing);
+        howIsItGoing.setVisibility(View.GONE);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            String displayName = user.getDisplayName();
+            if (displayName != null) {
+                greeting.setText("Hello, " + displayName);
+                new Handler().postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        howIsItGoing.setVisibility(View.VISIBLE);
+                    }
+                },6000);
+            } else {
+                greeting.setText("Hello, Guest");
+            }
+        } else {
+            greeting.setText("Hello, Guest");
+        }
+        progress = findViewById(R.id.lottieProgress);
+        cardView = findViewById(R.id.user_greeting_card);
+        todaysMeals = findViewById(R.id.todays_meals);
         avatarImageView = findViewById(R.id.imageView2);
         mealName = findViewById(R.id.meal_of_day_title);
         mealImage = findViewById(R.id.meal_image);
         mealDescription = findViewById(R.id.meal_of_day_description);
+        avatarImageView.setVisibility(View.GONE);
+        mealName.setVisibility(View.GONE);
+        mealImage.setVisibility(View.GONE);
+        mealDescription.setVisibility(View.GONE);
+        progress.setVisibility(View.VISIBLE);
+        cardView.setVisibility(View.GONE);
+        todaysMeals.setVisibility(View.GONE);
+
+        Handler handler = new Handler();
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                progress.setVisibility(View.GONE);
+                avatarImageView.setVisibility(View.VISIBLE);
+                mealName.setVisibility(View.VISIBLE);
+                mealImage.setVisibility(View.VISIBLE);
+                mealDescription.setVisibility(View.VISIBLE);
+                cardView.setVisibility(View.VISIBLE);
+                todaysMeals.setVisibility(View.VISIBLE);
+            }
+        }, 6000);
 
         presenter = new MealsPresenter(this, new MealsRemoteDataSourceImpl());
         presenter.getRandom();
@@ -59,6 +115,7 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
                 });
             }
     }
+
 
     @Override
     public void showRandomMeal(Meal meal) {
