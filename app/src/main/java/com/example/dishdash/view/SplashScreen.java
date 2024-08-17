@@ -1,4 +1,4 @@
-package com.example.dishdash;
+package com.example.dishdash.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.example.dishdash.R;
 
 public class SplashScreen extends AppCompatActivity {
 LottieAnimationView lottie;

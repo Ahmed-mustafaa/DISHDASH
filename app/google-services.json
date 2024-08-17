@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "464755032493",
+    "project_id": "dishdash-aadbb",
+    "storage_bucket": "dishdash-aadbb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:464755032493:android:d34b727f6d383e7c7c6124",
+        "android_client_info": {
+          "package_name": "com.example.dishdash"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "464755032493-k68ivkutvjvgki8dckiovagcthl3qsl0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.dishdash",
+            "certificate_hash": "a5821745cad6eff869a96f857f3e802f9cee1e2d"
+          }
+        },
+        {
+          "client_id": "464755032493-qjcpvo49o2egao02qgcec675rs4jdefa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGrT9CztWlwKfEjSpjaduUzVZZC3G000Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "464755032493-qjcpvo49o2egao02qgcec675rs4jdefa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
