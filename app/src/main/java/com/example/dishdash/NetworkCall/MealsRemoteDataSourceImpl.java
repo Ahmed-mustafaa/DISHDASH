@@ -2,6 +2,7 @@ package com.example.dishdash.NetworkCall;
 
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -20,8 +21,11 @@ public class MealsRemoteDataSourceImpl {
     public static final String TAG = "RandomMeal";
     public static final String BASE_URL = "https://www.themealdb.com/api/json/v1/1/";
     private MealService mealServices;
-    private MealResponse mResponse;
-    private Call<MealResponse> call ;
+
+    private Call<MealResponse> randomMealCall;
+    private Call<MealResponse> breakfastCall;
+    private Call<MealResponse> lunchCall;
+    private Call<MealResponse> dinnerCall;
     private static MealsRemoteDataSourceImpl retClient = null;
 
     public MealsRemoteDataSourceImpl() {
@@ -30,7 +34,11 @@ public class MealsRemoteDataSourceImpl {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         mealServices = retrofit.create(MealService.class);
-     call  =  mealServices.getRandom();
+        randomMealCall = mealServices.getRandom();
+        breakfastCall = mealServices.getMealsByCategory("breakfast");
+        lunchCall = mealServices.getMealsByCategory("Seafood");
+        dinnerCall = mealServices.getMealsByCategory("beef");
+
     }
 
     public static synchronized MealsRemoteDataSourceImpl getInstance() {
@@ -42,7 +50,7 @@ public class MealsRemoteDataSourceImpl {
 
 
     public void makeNetworkCall(NetworkCallBack ntwrkCallBack) {
-        call.enqueue(new Callback<MealResponse>() {
+        randomMealCall.enqueue(new Callback<MealResponse>() {
             @Override
             public void onResponse(Call<MealResponse> call, Response<MealResponse> response) {
                 if (response.isSuccessful()) {
@@ -52,6 +60,8 @@ public class MealsRemoteDataSourceImpl {
                     String mealArea = meal.getStrArea();
                     String mealInstructions = meal.getStrInstructions();
                     String mealImage = meal.getStrMealThumb();
+
+
                     Log.i(TAG, "onResponse: " + meal);
                     ntwrkCallBack.onSuccess(meal);
                     Log.i(TAG, "onSucess: " + meal.toString());
@@ -72,6 +82,41 @@ public class MealsRemoteDataSourceImpl {
 
         });
 
+    }
+
+    public void getDailyMeals(DailyMealsCall callback) {
+        List<Meal> meals = new ArrayList<>();
+        int[] completedRequests = {0};
+        final int totalRequests = 3; // Total requests we are making
+
+        Callback<MealResponse> commonCallback = new Callback<MealResponse>() {
+            @Override
+            public void onResponse(Call<MealResponse> call, Response<MealResponse> response) {
+                if (response.isSuccessful() && response.body() != null &&response.body().getMeals() != null && !response.body().getMeals().isEmpty()) {
+                    meals.add(response.body().getMeals().get(0));
+                } else {
+                    Log.e(TAG, "Error fetching meal: " + call.request().url());
+                }
+
+                completedRequests[0]++;
+                if (completedRequests[0] == totalRequests) {
+                    callback.OnSuccess(meals); // Notify success when all requests are completed
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MealResponse> call, Throwable t) {
+                Log.e(TAG, "Error fetching meal: " + t.getMessage());
+                completedRequests[0]++;
+                if (completedRequests[0] == totalRequests) {
+                    callback.OnFailure(new Throwable("Failed to fetch all meals")); // Notify success with partial results if some requests failed
+                }
+            }
+        };
+
+        breakfastCall.enqueue(commonCallback);
+        lunchCall.enqueue(commonCallback);
+        dinnerCall.enqueue(commonCallback);
     }
 }
 

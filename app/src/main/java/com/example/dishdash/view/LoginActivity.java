@@ -146,6 +146,8 @@
 
             if (storedName != null && storedPassword != null && storedName.equals(name) && storedPassword.equals(password)) {
                 Toast.makeText(this, "Welcome back", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(LoginActivity.this, DashBoardActivity.class);
+                startActivity(intent);
                 return true;
             } else {
                 Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT).show();
