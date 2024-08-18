@@ -2,11 +2,15 @@ package com.example.dishdash.presenter;
 
 import androidx.annotation.NonNull;
 
+import com.example.dishdash.NetworkCall.DailyMealsCall;
 import com.example.dishdash.NetworkCall.MealResponse;
 import com.example.dishdash.NetworkCall.MealService;
 import com.example.dishdash.NetworkCall.MealsRemoteDataSourceImpl;
+import com.example.dishdash.NetworkCall.NetworkCallBack;
 import com.example.dishdash.model.Meal;
 import com.example.dishdash.view.MealsView;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,6 +35,25 @@ public class MealsPresenter {
         mealService = retrofit.create(MealService.class);
     }
 
+public void getDailyMeals() {
+    MealsRemoteDataSourceImpl.getDailyMeals(new DailyMealsCall() {
+        @Override
+        public void OnSuccess(List<Meal> meals) {
+            if(view != null){
+                view.showDailyMeals(meals);
+            }
+        }
+
+        @Override
+        public void OnFailure(Throwable throwable) {
+            if (view != null) {
+                view.showError(throwable.getMessage());
+            }
+
+
+        }
+    });
+}
     public void getRandom() {
         mealService.getRandom().enqueue(new Callback<MealResponse>() {
             @Override

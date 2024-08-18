@@ -58,7 +58,7 @@ LottieAnimationView lottie;
 
 // Create a Handler to update the text
         Handler handler = new Handler();
-        int delay = 150; // delay in milliseconds before adding next character
+        int delay = 100; // delay in milliseconds before adding next character
 
         for (int i = 0; i < fullText.length(); i++) {
             final int index = i;
@@ -79,7 +79,7 @@ LottieAnimationView lottie;
                     startActivity(intent);
                     finish();
                 }
-                    },1000);
-            }, 1000);
+                    },1500);
+            }, fullText.length()* delay +500);
         }
     }
