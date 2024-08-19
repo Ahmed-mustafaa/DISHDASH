@@ -1,13 +1,17 @@
 package com.example.dishdash.NetworkCall;
 
+import static com.google.android.gms.tasks.Tasks.call;
+
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
+import com.example.dishdash.model.Category;
+import com.example.dishdash.model.Country;
 import com.example.dishdash.model.Meal;
-import com.example.dishdash.NetworkCall.MealResponse;
+import com.example.dishdash.view.CountriesAdapter;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,8 +25,13 @@ public class MealsRemoteDataSourceImpl {
     public static final String TAG = "RandomMeal";
     public static final String BASE_URL = "https://www.themealdb.com/api/json/v1/1/";
     private MealService mealServices;
+    private Service countryService;
+    private Service categoryService;
+    private CountriesAdapter adapter; // Reference to the adapter
+
 
     private Call<MealResponse> randomMealCall;
+    private Call<List<Country>> countryCall;
     private Call<MealResponse> breakfastCall;
     private Call<MealResponse> lunchCall;
     private Call<MealResponse> dinnerCall;
@@ -35,6 +44,8 @@ public class MealsRemoteDataSourceImpl {
                 .build();
         mealServices = retrofit.create(MealService.class);
         randomMealCall = mealServices.getRandom();
+        countryService = retrofit.create(Service.class);
+        categoryService = retrofit.create(Service.class);
         breakfastCall = mealServices.getMealsByCategory("breakfast");
         lunchCall = mealServices.getMealsByCategory("Seafood");
         dinnerCall = mealServices.getMealsByCategory("beef");
@@ -83,7 +94,7 @@ public class MealsRemoteDataSourceImpl {
         });
 
     }
-
+/*
     public void getDailyMeals(DailyMealsCall callback) {
         List<Meal> meals = new ArrayList<>();
         int[] completedRequests = {0};
@@ -117,9 +128,69 @@ public class MealsRemoteDataSourceImpl {
         breakfastCall.enqueue(commonCallback);
         lunchCall.enqueue(commonCallback);
         dinnerCall.enqueue(commonCallback);
-    }
-}
+    }*/
 
+    public void getCountries(CountryCallBack countryCallBack){
+        countryService.getCountries().enqueue(new Callback<CountryResponse> () {
+            @Override
+            public void onResponse(Call<CountryResponse> call, Response<CountryResponse> response) {
+               if (response.isSuccessful() && response.body() != null) {
+                List<Meal> meals = response.body().getMeals();
+                List<Country> countries = new ArrayList<>();
+                for(Meal meal : meals){
+                    countries.add(new Country(meal.getStrArea()));
+                }
+                countryCallBack.onSuccess(countries);
+                Log.i(TAG, "onResponse: " + countries +response.code());
+            } else {
+                    Log.e(TAG, "Error fetching countries: " + response.code()); // otherwise show this error message with response code
+                    countryCallBack.onFailure(new Throwable("Respponse failed to fetch countries due to"));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CountryResponse> call, Throwable t) {
+                new Throwable("Error fetching countries: " + t.getMessage());
+                adapter.setItems(new ArrayList<>());
+            }
+
+        });
+    }
+
+
+
+
+
+public void getCategories(NetworkCallBack categoryCallBack){
+    categoryService.getCategories().enqueue(new Callback<CountryResponse> () {
+        @Override
+        public void onResponse(Call<CountryResponse> call, Response<CountryResponse> response) {
+            if (response.isSuccessful() && response.body() != null) {
+                List<Meal> meals = response.body().getMeals();
+                List<Category> categories = new ArrayList<>();
+                for(Meal meal : meals){
+                    categories.add(new Category(meal.getStrCategory()));
+                }
+                categoryCallBack.onSuccessCategory(categories);
+                Log.i(TAG, "onResponse: " + categories +response.code());
+            } else {
+                Log.e(TAG, "Error fetching countries: " + response.code()); // otherwise show this error message with response code
+                categoryCallBack.onFailure(new Throwable("Respponse failed to fetch countries due to"));
+            }
+        }
+
+        @Override
+        public void onFailure(Call<CountryResponse> call, Throwable t) {
+            new Throwable("Error fetching countries: " + t.getMessage());
+            adapter.setItems(new ArrayList<>());
+        }
+
+
+
+
+    });
+}
+}
 
 
 

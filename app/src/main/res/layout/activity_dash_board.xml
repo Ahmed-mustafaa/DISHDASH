@@ -30,63 +30,18 @@
         app:lottie_rawRes="@raw/progressmeals"
         app:lottie_speed="1.2" />
 
-    <!--  <androidx.cardview.widget.CardView
-                android:id="@+id/breakfast_card"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="8dp"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
 
-
-
-                    <TextView
-                        android:id="@+id/breakfast_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Breakfast"
-                        android:textSize="16sp"
-                        android:textColor="@color/black"/>
-
-                    <TextView
-                        android:id="@+id/breakfast_description"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="Meal Description"
-                        android:textSize="14sp"
-                        android:textColor="@color/primary">
-
-                    </TextView>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/lunch_card"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
-
-
-                    <TextView
-                        android:id="@+id/lunch_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Lunch"
-                        android:textSize="16sp"
-                        android:textColor="@color/black"/>
-
-                    <TextView
-                        android:id="@+id/lunch_description"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="Meal Description"
-                        android:textSize="14sp"
-                        android:textColor="@color/primary"/>
--->
+    <fragment
+        android:id="@+id/nav_host_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/nav_graph" />
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -98,47 +53,22 @@
         app:layout_anchorGravity="center">
 
 
-        <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="66dp"
-            android:layout_height="482dp"
-            android:layout_marginStart="-20dp"
-            android:layout_marginTop="42dp"
-            android:orientation="vertical"
+        <androidx.drawerlayout.widget.DrawerLayout
+            android:layout_width="53dp"
+            android:layout_height="366dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="136dp"
+
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView2">
+            app:layout_constraintTop_toTopOf="parent">
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/nav_bread"
+            <com.google.android.material.navigation.NavigationView
+                android:id="@+id/navigation"
                 android:layout_width="100dp"
-                android:layout_height="197dp"
-                android:layout_marginBottom="100dp"
-                android:fontFamily="@font/league_spartan_extrabold"
-                android:gravity="center"
-                android:rotation="-90"
-                android:text="Categories"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/black" />
-
-            <TextView
-                android:id="@+id/nav_countries"
-                android:layout_width="wrap_content"
-                android:layout_height="185dp"
-                android:layout_gravity="end|bottom"
-                android:layout_marginBottom="30dp"
-                android:fontFamily="@font/league_spartan_extrabold"
-                android:gravity="center"
-                android:rotation="-90"
-                android:text="Countires"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/black" />
-
-
-        </LinearLayout>
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                app:headerLayout="@layout/linear" />
+        </androidx.drawerlayout.widget.DrawerLayout>
 
         <ImageView
             android:id="@+id/imageView2"
@@ -195,43 +125,58 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/MealOfTheDayCard"
             android:layout_marginStart="116dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="30dp"
             android:fontFamily="@font/amarante"
-            android:text="Today's Meals"
+            android:text="Filter by countries"
             android:textColor="@color/black"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/MealOfTheDayCard" />
 
-        <HorizontalScrollView
-            android:id="@+id/horizontalScrollView"
-            android:layout_width="370dp"
-            android:layout_height="291dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/MealOfTheDayCard">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/countries_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/meals_recyclerview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/filter_by_category" />
 
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="22dp"
-                android:orientation="horizontal"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/todays_meals" />
-        </HorizontalScrollView>
+        <TextView
+            android:id="@+id/filter_by_category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/MealOfTheDayCard"
+            android:layout_marginStart="116dp"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/amarante"
+            android:text="Filter by categories"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/categories_recyclerview" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/categories_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/todays_meals" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/MealOfTheDayCard"
             android:layout_width="305dp"
             android:layout_height="294dp"
             android:layout_marginStart="76dp"
-            android:layout_marginTop="136dp"
+            android:layout_marginTop="100dp"
             android:padding="80dp"
             app:cardBackgroundColor="@color/primary"
             app:cardCornerRadius="12dp"
@@ -271,7 +216,7 @@
             android:layout_width="310dp"
             android:layout_height="35dp"
             android:layout_marginStart="96dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="5dp"
             android:fontFamily="@font/amarante"
             android:text="Meal of The Day "
             android:textColor="@color/black"
@@ -301,7 +246,7 @@
             android:backgroundTint="@color/black"
             app:cornerRadius="20dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView" />
+            app:layout_constraintTop_toBottomOf="@+id/categories_recyclerview" />
 
         <View
             android:id="@+id/view"
@@ -309,11 +254,11 @@
             android:layout_height="36dp"
 
             android:layout_gravity="start"
-            android:layout_marginEnd="50dp"
+            android:layout_marginEnd="40dp"
             android:layout_marginBottom="300dp"
             android:background="@drawable/dot"
-            app:layout_constraintBottom_toTopOf="@+id/horizontalScrollView"
-            app:layout_constraintEnd_toStartOf="@+id/MealOfTheDayCard" />
+            app:layout_constraintBottom_toTopOf="@+id/MealOfTheDayCard"
+            app:layout_constraintEnd_toStartOf="@+id/categories_recyclerview" />
 
         <View
             android:id="@+id/view2"
@@ -322,7 +267,7 @@
             android:layout_gravity="start"
 
             android:layout_marginTop="250dp"
-            android:layout_marginEnd="50dp"
+            android:layout_marginEnd="30dp"
             android:background="@drawable/dot"
             app:layout_constraintEnd_toStartOf="@+id/MealOfTheDayCard"
             app:layout_constraintTop_toBottomOf="@+id/view" />

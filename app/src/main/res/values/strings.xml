@@ -2,5 +2,8 @@
     <string name="app_name">DISHDASH</string>
     <string name="default_web_client_id">464755032493-qjcpvo49o2egao02qgcec675rs4jdefa.apps.googleusercontent.com</string>
     <string name="favorites" />
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="country_flag" />
 
 </resources>

@@ -4,24 +4,30 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
-import com.example.dishdash.NetworkCall.DailyMealsCall;
+import com.example.dishdash.NetworkCall.CountryCallBack;
 import com.example.dishdash.NetworkCall.MealsRemoteDataSourceImpl;
+import com.example.dishdash.NetworkCall.NetworkCallBack;
 import com.example.dishdash.R;
+import com.example.dishdash.model.Category;
+import com.example.dishdash.model.Country;
+import com.example.dishdash.model.DisplayItem;
 import com.example.dishdash.model.Meal;
 import com.example.dishdash.presenter.MealsPresenter;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
@@ -29,10 +35,11 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class DashBoardActivity extends AppCompatActivity implements MealsView {
     private ImageView avatarImageView;
+    NavigationView navigationView;
     private TextView mealName;
     private TextView mealDescription;
     private TextView greeting;
@@ -43,7 +50,12 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
     CardView cardView;
     LottieAnimationView progress;
     RecyclerView recyclerView;
-    DailyMealsAdapter dAdapter;
+    RecyclerView recyclerView2;
+    CountriesAdapter dAdapter;
+    CountriesAdapter CategoriesAdapter;
+    private List<DisplayItem> countryitems = new ArrayList<>(); // Declare items as a class member
+    private List<DisplayItem> categoryitems = new ArrayList<>(); // Declare items as a class member
+
     View categories;
     View countries;
 
@@ -51,16 +63,26 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash_board);
+        navigationView = findViewById(R.id.navigation);
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        NavigationUI.setupWithNavController(navigationView, navController);
         greeting = findViewById(R.id.user_greeting);
         howIsItGoing = findViewById(R.id.HowIsItGOing);
-        recyclerView = findViewById(R.id.meals_recyclerview);
+        recyclerView = findViewById(R.id.countries_recyclerview);
+        recyclerView2 = findViewById(R.id.categories_recyclerview);
+        recyclerView2.setHasFixedSize(true);
+        recyclerView2.setVisibility(View.GONE);
+        recyclerView2.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        dAdapter = new DailyMealsAdapter(this, new ArrayList<>());
-        recyclerView.setAdapter(dAdapter);
-
         recyclerView.setVisibility(View.GONE);
         howIsItGoing.setVisibility(View.GONE);
+       // Initialize items in onCreate
+        dAdapter = new CountriesAdapter(DashBoardActivity.this, countryitems); // Create adapter instance with empty list
+        CategoriesAdapter = new CountriesAdapter(DashBoardActivity.this, categoryitems); // Create adapter instance with empty list
+        recyclerView.setAdapter(dAdapter);
+        recyclerView2.setAdapter(CategoriesAdapter);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             String displayName = user.getDisplayName();
@@ -72,13 +94,14 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
                     public void run() {
                         howIsItGoing.setVisibility(View.VISIBLE);
                         recyclerView.setVisibility(View.VISIBLE);
+                        recyclerView2.setVisibility(View.VISIBLE);
                     }
                 }, 6000);
             } else {
-                greeting.setText("Hello, Guest");
+                greeting.setText("Hello,");
             }
         } else {
-            greeting.setText("Hello, Guest");
+            greeting.setText("Hello,");
         }
         progress = findViewById(R.id.lottieProgress);
         cardView = findViewById(R.id.user_greeting_card);
@@ -113,24 +136,16 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
                 mealImage.setVisibility(View.VISIBLE);
                 cardView.setVisibility(View.VISIBLE);
                 todaysMeals.setVisibility(View.VISIBLE);
-                findViewById(R.id.view).setVisibility(View.VISIBLE);
+             /*   findViewById(R.id.view).setVisibility(View.VISIBLE);
+                findViewById(R.id.view2).setVisibility(View.VISIBLE);*/
 
 
             }
         }, 6000);
 
-        categories.setOnClickListener(v->{
-            categories.setVisibility(View.VISIBLE);
-         //   startActivity(new Intent(DashBoardActivity.this,CategoriesActivity.class));
-        });
-        countries.setOnClickListener(v->{
-            countries.setVisibility(View.VISIBLE);
-          //  startActivity(new Intent(DashBoardActivity.this,CountriesActivity.class));
 
 
-        });
-
-        ;countries.setOnTouchListener((v, event) ->{
+        countries.setOnTouchListener((v, event) ->{
                     switch (event.getAction()) {
                         case MotionEvent.ACTION_DOWN:
                             countries.setVisibility(View.VISIBLE);  // Show the description
@@ -161,22 +176,51 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
         });
         presenter = new MealsPresenter(this, new MealsRemoteDataSourceImpl());
         presenter.getRandom();
-        MealsRemoteDataSourceImpl.getInstance().getDailyMeals(new DailyMealsCall() {
+        MealsRemoteDataSourceImpl.getInstance().getCountries(new CountryCallBack() {
             @Override
-            public void OnSuccess(List<Meal> meals) {
-                dAdapter.setMeals(meals);
-                dAdapter.notifyDataSetChanged();
+            public void onSuccess(List<Country> countries) {
+                runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        showAllCountries(countries);
+                    }
+                });
             }
 
-            @Override
-            public void OnFailure(Throwable throwable) {
 
-            }
+            @Override
+            public void onFailure(Throwable throwable) {
+Toast.makeText(DashBoardActivity.this, "Failed to load countries", Toast.LENGTH_SHORT).show();            }
 
 
         });
+        MealsRemoteDataSourceImpl.getInstance().getCategories(new NetworkCallBack() {
+            @Override
+            public void onSuccess(Meal meal) {
 
-        loadAvatarImage();
+            }
+
+            @Override
+            public void onSuccessCategory(List<Category> categories) {
+                runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        showAllCategories(categories);
+                    }
+            });
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+Toast.makeText(DashBoardActivity.this, "Failed to load categories", Toast.LENGTH_SHORT).show();
+                 new Throwable("Error fetching Categories");
+            }
+        });
+
+
+                loadAvatarImage();
 
     }
 
@@ -215,8 +259,17 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
 
     @Override
     public void showDailyMeals(List<Meal> meals) {
-        dAdapter.setMeals(meals);
+        /*dAdapter.setMeals(meals);*/
         dAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showAllCountries(List<Country> countries) {
+        countryitems.addAll(countries.stream()
+                .map(country -> new DisplayItem(country.getStrArea()))
+                .collect(Collectors.toList()));
+        dAdapter.setItems(countryitems);
+
     }
 
 
@@ -226,5 +279,27 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
 
     }
 
+    @Override
+    public void showAllCategories(List<Category> categories) {
+        categoryitems.addAll(categories.stream()
+                .map(category -> new DisplayItem(category.getStrCategory()))
+                .collect(Collectors.toList()));
+        CategoriesAdapter.setItems(categoryitems);
+        recyclerView2.setAdapter(CategoriesAdapter);
+    }
+
 
 }
+/* navigationView.setNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()){
+                case R.id.categories:
+                    navController.navigate(R.id.categoriesFragment);
+                    break;
+                case R.id.countries:
+                    navController.navigate(R.id.countriesFragment);
+                    break;
+            }
+            DrawerLayout drawer = findViewById(R.id.drawer_layout); // Assuming you have a DrawerLayout with this ID
+            drawer.closeDrawer(GravityCompat.START);
+            return true;
+        });*/

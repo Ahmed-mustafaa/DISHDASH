@@ -2,11 +2,14 @@ package com.example.dishdash.presenter;
 
 import androidx.annotation.NonNull;
 
+import com.example.dishdash.NetworkCall.CountryCallBack;
 import com.example.dishdash.NetworkCall.DailyMealsCall;
 import com.example.dishdash.NetworkCall.MealResponse;
 import com.example.dishdash.NetworkCall.MealService;
 import com.example.dishdash.NetworkCall.MealsRemoteDataSourceImpl;
 import com.example.dishdash.NetworkCall.NetworkCallBack;
+import com.example.dishdash.model.Category;
+import com.example.dishdash.model.Country;
 import com.example.dishdash.model.Meal;
 import com.example.dishdash.view.MealsView;
 
@@ -36,23 +39,49 @@ public class MealsPresenter {
     }
 
 public void getDailyMeals() {
-    MealsRemoteDataSourceImpl.getDailyMeals(new DailyMealsCall() {
+    MealsRemoteDataSourceImpl.getCountries(new CountryCallBack() {
         @Override
-        public void OnSuccess(List<Meal> meals) {
+        public void onSuccess(List<Country> countries) {
             if(view != null){
-                view.showDailyMeals(meals);
+                view.showAllCountries(countries);
             }
         }
 
         @Override
-        public void OnFailure(Throwable throwable) {
+        public void onFailure(Throwable throwable) {
+
             if (view != null) {
                 view.showError(throwable.getMessage());
             }
-
-
         }
+
+
     });
+
+
+MealsRemoteDataSourceImpl.getCategories(new NetworkCallBack() {
+
+
+    @Override
+    public void onSuccess(Meal meal) {
+
+    }
+
+    @Override
+    public void onSuccessCategory(List<Category> categories) {
+        if (view != null) {
+            view.showAllCategories(categories);
+        }
+    }
+
+    @Override
+    public void onFailure(Throwable t) {
+
+    }
+
+
+});
+
 }
     public void getRandom() {
         mealService.getRandom().enqueue(new Callback<MealResponse>() {
