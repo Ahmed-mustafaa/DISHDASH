@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="151dp"
+        android:layout_height="576dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="10dp"
+        android:backgroundTint="#00FFFFFF"
+        android:foregroundTint="#56FFFFFF"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/categories"
+            android:layout_width="100dp"
+            android:layout_height="197dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="100dp"
+            android:fontFamily="@font/league_spartan_extrabold"
+            android:gravity="center"
+            android:rotation="-90"
+            android:text="Categories"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/countries"
+            android:layout_width="100dp"
+            android:layout_height="197dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginBottom="150dp"
+            android:fontFamily="@font/league_spartan_extrabold"
+            android:gravity="center"
+            android:rotation="-90"
+            android:text="Countries"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/black" />
+
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
