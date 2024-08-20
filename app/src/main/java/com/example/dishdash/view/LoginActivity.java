@@ -73,28 +73,7 @@
 
             logGoogle.setOnClickListener(v -> SignInWithGoogle());
 
-//       /* boolean validate(String name , String password){
-//
-//            SharedPreferences sharedPreferences = getSharedPreferences("userData", MODE_PRIVATE);
-//            String storedName = sharedPreferences.getString("name",null);
-//            String storedPassword = sharedPreferences.getString("password",null);
-//
-//            if(storedName != null && storedPassword != null && storedName.equals(name) && storedPassword.equals(password)) {
-//               *//* Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-//                startActivity(intent);
-//                finish();*//*
-//
-//                Toast.makeText(this, "Welcome back", Toast.LENGTH_SHORT).show();
-//                return true;
-//            }else {
-//                Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT).show();
-//                return false;
-//            }
-//
-//        }
         }
-
-
 
         private void SignInWithGoogle() {
             

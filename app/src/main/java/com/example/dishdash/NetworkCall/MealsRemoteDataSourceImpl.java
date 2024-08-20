@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.example.dishdash.model.Category;
 import com.example.dishdash.model.Country;
+import com.example.dishdash.model.DisplayItem;
 import com.example.dishdash.model.Meal;
 import com.example.dishdash.view.CountriesAdapter;
 
@@ -26,7 +27,7 @@ public class MealsRemoteDataSourceImpl {
     public static final String BASE_URL = "https://www.themealdb.com/api/json/v1/1/";
     private MealService mealServices;
     private Service countryService;
-    private Service categoryService;
+    private MealService categoryService;
     private CountriesAdapter adapter; // Reference to the adapter
 
 
@@ -45,10 +46,8 @@ public class MealsRemoteDataSourceImpl {
         mealServices = retrofit.create(MealService.class);
         randomMealCall = mealServices.getRandom();
         countryService = retrofit.create(Service.class);
-        categoryService = retrofit.create(Service.class);
-        breakfastCall = mealServices.getMealsByCategory("breakfast");
-        lunchCall = mealServices.getMealsByCategory("Seafood");
-        dinnerCall = mealServices.getMealsByCategory("beef");
+        categoryService = retrofit.create(MealService.class);
+
 
     }
 
@@ -129,7 +128,6 @@ public class MealsRemoteDataSourceImpl {
         lunchCall.enqueue(commonCallback);
         dinnerCall.enqueue(commonCallback);
     }*/
-
     public void getCountries(CountryCallBack countryCallBack){
         countryService.getCountries().enqueue(new Callback<CountryResponse> () {
             @Override
@@ -161,34 +159,59 @@ public class MealsRemoteDataSourceImpl {
 
 
 
-public void getCategories(NetworkCallBack categoryCallBack){
-    categoryService.getCategories().enqueue(new Callback<CountryResponse> () {
+public void getCategories(NetworkCallBack categoryCallBack) {
+    categoryService.getMealsByCategory().enqueue(new Callback<CategoryResponse>() {
         @Override
-        public void onResponse(Call<CountryResponse> call, Response<CountryResponse> response) {
+        public void onResponse(Call<CategoryResponse> call, Response<CategoryResponse> response) {
             if (response.isSuccessful() && response.body() != null) {
-                List<Meal> meals = response.body().getMeals();
-                List<Category> categories = new ArrayList<>();
-                for(Meal meal : meals){
-                    categories.add(new Category(meal.getStrCategory()));
+                List<Category> categories = response.body().getCategories();
+                List<DisplayItem> items = new ArrayList<>();
+                for (Category category : categories) {
+                    DisplayItem item = new DisplayItem(DisplayItem.ItemType.CATEGORY,
+                            category.getStrCategory(),
+                            category.getStrCategoryThumb());
+                    item.setImageUrl(category.getStrCategoryThumb());
+                    item.setStrCategory(category.getStrCategory());
+                    items.add(item);
                 }
                 categoryCallBack.onSuccessCategory(categories);
-                Log.i(TAG, "onResponse: " + categories +response.code());
+
+               /* for(Meal meal : meals){
+                    categories.add(new Category(meal.getStrCategory()));
+                }*/
+
+                Log.i(TAG, "onResponse: " + categories + response.code());
             } else {
-                Log.e(TAG, "Error fetching countries: " + response.code()); // otherwise show this error message with response code
+                Log.e(TAG, "Error fetching categories: " + response.code()); // otherwise show this error message with response code
                 categoryCallBack.onFailure(new Throwable("Respponse failed to fetch countries due to"));
             }
         }
 
         @Override
-        public void onFailure(Call<CountryResponse> call, Throwable t) {
-            new Throwable("Error fetching countries: " + t.getMessage());
+        public void onFailure(Call<CategoryResponse> call, Throwable t) {
+            new Throwable("Error fetching categories : " + t.getMessage());
             adapter.setItems(new ArrayList<>());
         }
-
-
-
-
     });
+}
+public void fetchMealsByCategories(String categoryname,CategoryCallBack callBack){
+    Call<CategoryResponse> call = mealServices.getMealsByCategory(categoryname);
+    call.enqueue(new Callback<CategoryResponse>() {
+        @Override
+        public void onResponse(Call<CategoryResponse> call, Response<CategoryResponse> response) {
+            if (response.isSuccessful() && response.body() != null) {
+                List<Meal> meals = response.body().getMeals();
+                callBack.onSuccess(meals);
+            } else {
+                callBack.onFailure(new Throwable("Failed to fetch meals for category: " + categoryname));
+            }
+        }
+        @Override
+        public void onFailure(Call<CategoryResponse> call, Throwable t) {
+            callBack.onFailure(t);
+        }
+    });
+
 }
 }
 

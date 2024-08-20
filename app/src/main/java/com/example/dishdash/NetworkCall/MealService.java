@@ -10,10 +10,11 @@ public interface MealService {
     @GET("random.php")
      Call<MealResponse> getRandom();
 
+    @GET("categories.php")
+    Call<CategoryResponse> getMealsByCategory();
+
+
     @GET("filter.php")
-    Call<MealResponse> getMealsByCategory(@Query("c") String category );
-
-
-
+    Call<CategoryResponse> getMealsByCategory(@Query("c") String category);
 
 }

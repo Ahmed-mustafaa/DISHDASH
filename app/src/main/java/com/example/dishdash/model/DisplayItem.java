@@ -8,18 +8,32 @@ package com.example.dishdash.model;
         public String strArea;
         public String strCategory;
 
-        public DisplayItem(String strArea) {
-            this.name = strArea;
-            this.strArea = strArea;
-            this.type = ItemType.COUNTRY;
+        public String getName() {
+            return name;
+        }
+
+        public String getImageUrl() {
+            return imageUrl;
+        }
+
+        public void setImageUrl(String imageUrl) {
+            this.imageUrl = imageUrl;
+        }
+
+        public void setStrCategory(String strCategory) {
+            this.strCategory = strCategory;
         }
 
         // Constructor for Category items
-        public DisplayItem(String strCategory, String imageUrl) {
-            this.name = strCategory;
-            this.imageUrl = imageUrl;
-            this.strCategory = strCategory;
-            this.type = ItemType.CATEGORY;
+        public DisplayItem(ItemType type, String name, String imageUrl) {
+            if(imageUrl == null){
+          this.type = ItemType.COUNTRY;
+            } else {
+                this.imageUrl = imageUrl;
+
+                this.type = ItemType.CATEGORY;
+            }
+            this.name = name;
         }
         public enum ItemType {
             COUNTRY,

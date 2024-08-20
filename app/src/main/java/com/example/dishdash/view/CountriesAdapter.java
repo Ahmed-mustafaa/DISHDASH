@@ -1,16 +1,19 @@
 package com.example.dishdash.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.dishdash.R;
 import com.example.dishdash.model.Category;
 import com.example.dishdash.model.Country;
@@ -53,10 +56,14 @@ public CountriesAdapter(Context mContext, List<DisplayItem> items) {
     DisplayItem item = items.get(position); // object from Country to get country name
         switch (item.type){
             case COUNTRY:
-                holder.countryName.setText(item.getStrArea());
+                holder.countryName.setText(item.getName());
                 break;
             case CATEGORY:
-                holder.CategoryName.setText(item.getStrCategory());
+                holder.CategoryName.setText(item.getName());
+                Glide.with(holder.itemView.getContext())
+                        .load(item.getImageUrl())
+                        .into(holder.category_Img);
+                break;
         }/*
         Glide.with(holder.thumb.getContext())
                 .load(Country.getStrMealThumb())
@@ -89,15 +96,40 @@ public CountriesAdapter(Context mContext, List<DisplayItem> items) {
         public TextView countryName;
         public TextView CategoryName;
         public View layout;
+        public ImageView category_Img;
 
 
         public ViewHolder(View v) {
             super(v);
-             layout = v;
+            layout = v;
             countryName = v.findViewById(R.id.country_name);
-            CategoryName= v.findViewById(R.id.category_name);
+            CategoryName = v.findViewById(R.id.category_name);
+            category_Img = v.findViewById(R.id.categoryI_Img);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION && items != null && position < items.size()) {
+                        DisplayItem item = items.get(position);
+                        if (item != null) {
+                            if (item.type == DisplayItem.ItemType.CATEGORY) {
+                                String categoryName = item.name;
+                                Intent intent = new Intent(view.getContext(), CategoryActivity.class);
+                                intent.putExtra("categoryName", categoryName);
+                                view.getContext().startActivity(intent); // Start the activity
 
-
+                                Toast.makeText(view.getContext(), "Clicked on category: " + categoryName, Toast.LENGTH_SHORT).show();
+                            } else if (item.type == DisplayItem.ItemType.COUNTRY) {
+                                String countryName = item.name;
+                                Intent intent = new Intent(view.getContext(), CategoryActivity.class);
+                                intent.putExtra("countryName", countryName);
+                                view.getContext().startActivity(intent); // Start the activity
+                                Toast.makeText(view.getContext(), "Clicked on country: " + countryName, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                }
+            });
         }
     }
 }

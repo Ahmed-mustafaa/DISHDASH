@@ -9,7 +9,7 @@ import com.example.dishdash.model.Meal;
 import java.util.List;
 
 public class CountryResponse {
-    private List<Meal> meals; // Change to List<Meal>
+    private final List<Meal> meals;
 
     public List<Meal> getMeals() { // Change to getMeals()
         return meals;

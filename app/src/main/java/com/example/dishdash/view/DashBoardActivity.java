@@ -78,7 +78,6 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setVisibility(View.GONE);
         howIsItGoing.setVisibility(View.GONE);
-       // Initialize items in onCreate
         dAdapter = new CountriesAdapter(DashBoardActivity.this, countryitems); // Create adapter instance with empty list
         CategoriesAdapter = new CountriesAdapter(DashBoardActivity.this, categoryitems); // Create adapter instance with empty list
         recyclerView.setAdapter(dAdapter);
@@ -143,22 +142,6 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
             }
         }, 6000);
 
-
-
-        countries.setOnTouchListener((v, event) ->{
-                    switch (event.getAction()) {
-                        case MotionEvent.ACTION_DOWN:
-                            countries.setVisibility(View.VISIBLE);  // Show the description
-                            break;
-
-                        case MotionEvent.ACTION_UP:
-                        case MotionEvent.ACTION_CANCEL:
-                            countries.setVisibility(View.GONE);  // Hide the description
-                            break;
-                    }
-                    return true;
-
-                });
         mealImage.setOnTouchListener( (v, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
@@ -266,7 +249,7 @@ Toast.makeText(DashBoardActivity.this, "Failed to load categories", Toast.LENGTH
     @Override
     public void showAllCountries(List<Country> countries) {
         countryitems.addAll(countries.stream()
-                .map(country -> new DisplayItem(country.getStrArea()))
+                .map(country -> new DisplayItem(DisplayItem.ItemType.COUNTRY, country.getStrArea(), null))
                 .collect(Collectors.toList()));
         dAdapter.setItems(countryitems);
 
@@ -282,7 +265,8 @@ Toast.makeText(DashBoardActivity.this, "Failed to load categories", Toast.LENGTH
     @Override
     public void showAllCategories(List<Category> categories) {
         categoryitems.addAll(categories.stream()
-                .map(category -> new DisplayItem(category.getStrCategory()))
+                .map(category -> new DisplayItem(DisplayItem.ItemType.CATEGORY,
+                        category.getStrCategory(), category.getStrCategoryThumb()))
                 .collect(Collectors.toList()));
         CategoriesAdapter.setItems(categoryitems);
         recyclerView2.setAdapter(CategoriesAdapter);
