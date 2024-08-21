@@ -1,6 +1,7 @@
 package com.example.dishdash.view;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -20,9 +22,9 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.ViewHolder> 
     private Context mContext;
 
     private List<Meal> meals;
-    boolean isCategoryMeals;
+    boolean isCategoryMeals=false;
 
-    private static final String TAG = "CountriesAdapter";
+    private static final String TAG = "Adapter";
 
     public MealsAdapter(Context mContext, List<Meal> meals, boolean isCategoryMeals) {
         this.mContext = mContext;
@@ -36,27 +38,50 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.ViewHolder> 
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup recycler, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(recycler.getContext());
         View vh;
-        if (isCategoryMeals) {
+       /* if (isCategoryMeals) {
 
             vh= inflater.inflate(R.layout.countries_layout, recycler, false);
-        } else {
+        } else {*/
             vh = inflater.inflate(R.layout.categories_items, recycler, false);
-        }
+
         return new ViewHolder(vh);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MealsAdapter.ViewHolder holder, int position) {
         Meal meal = meals.get(position); // Get Meal object at the current position
-
-                holder.MealName.setText(meal.getStrMeal());
-
-
+        holder.mealId= Integer.parseInt(meal.getIdMeal());
+        holder.MealName.setText(meal.getStrMeal());
+        if (meal != null && meal.getStrMealThumb() != null) {
+            // Check if ImageView is not null
+            if (holder.categoryI_Img != null) {
                 Glide.with(holder.itemView.getContext())
                         .load(meal.getStrMealThumb())
-                        .into(holder.category_Img);
+                        .into(holder.categoryI_Img);
+                Log.i(TAG, "onBindViewHolder: " + meal.getStrMealThumb());
 
+            } else {
+                Log.e("MealsAdapter", "ImageView is null in onBindViewHolder");
+            }
+        } else {
+            Log.e("MealsAdapter", "Meal or Image URL is null in onBindViewHolder");
 
+        }
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // safeArgs passing mealName to the fragment to display its details
+   int mealId= Integer.parseInt(meals.get(holder.getAdapterPosition()).getIdMeal());
+                String mealName = meals.get(holder.getAdapterPosition()).getStrMeal();
+                String mealThumb = meal.getStrMealThumb();
+                CategoryActivityDirections.ActionCategoryActivityToMealDetailsFragment action =
+                        CategoryActivityDirections.actionCategoryActivityToMealDetailsFragment(mealName, mealThumb, mealId);
+                Navigation.findNavController(v).navigate(action);
+
+                // Navigate to MealDetailsFragment
+            }
+        });
     }
 
     @Override
@@ -66,24 +91,28 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.ViewHolder> 
     public void setMeals(List<Meal> meals ,boolean isCategoryMeals) {
         this.meals = meals;
         this.isCategoryMeals = isCategoryMeals;
-
         notifyDataSetChanged();
     }
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView MealName;
+        public int mealId;
         public View layout;
-        public ImageView category_Img;
+        public ImageView categoryI_Img;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            layout = itemView;
-            if (isCategoryMeals) {
-                MealName = itemView.findViewById(R.id.country_name);
-            } else {
+                layout = itemView;
                 MealName = itemView.findViewById(R.id.category_name);
-                category_Img = itemView.findViewById(R.id.categoryI_Img);
+                categoryI_Img = itemView.findViewById(R.id.categoryI_Img);
+
             }
 
-        }
+
+            /* else {
+                MealName = itemView.findViewById(R.id.category_name);
+                categoryI_Img = itemView.findViewById(R.id.categoryI_Img);
+            }*/
+
+
     }
 }

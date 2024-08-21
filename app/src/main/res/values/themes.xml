@@ -3,9 +3,14 @@
     <style name="Base.Theme.DISHDASH" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <item name="colorPrimary">@color/primary</item>
-    <item name="android:hardwareAccelerated">true</item>
+        <item name="android:hardwareAccelerated">true</item>
     </style>
 
-    <style name="Theme.DISHDASH" parent="Base.Theme.DISHDASH" ></style>
+    <style name="Theme.DISHDASH" parent="Base.Theme.DISHDASH"></style>
+
+    <style name="ThemeOverlay.DISHDASH.FullscreenContainer" parent="">
+        <item name="fullscreenBackgroundColor">@color/light_blue_600</item>
+        <item name="fullscreenTextColor">@color/light_blue_A200</item>
+    </style>
 
 </resources>

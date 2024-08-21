@@ -3,6 +3,7 @@
 plugins {
     alias(libs.plugins.android.application)
     id("com.google.gms.google-services")
+    id("androidx.navigation.safeargs")
 }
 
 android {
@@ -34,6 +35,7 @@ android {
     }
     buildFeatures{
         dataBinding = true
+        viewBinding = true
     }
 }
 
@@ -73,7 +75,7 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.2.1")
     //card view
     implementation ("androidx.cardview:cardview:1.0.0")
-    implementation ("com.github.bumptech.glide:glide:4.15.1")
-    implementation ("androidx.navigation:navigation-fragment:2.5.3")
-    implementation ("androidx.navigation:navigation-ui:2.5.3")
+    implementation ("androidx.navigation:navigation-fragment-ktx:2.7.1")
+    implementation ("androidx.navigation:navigation-ui-ktx:2.7.1")
+
 }

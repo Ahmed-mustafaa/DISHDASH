@@ -171,6 +171,11 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
                 });
             }
 
+            @Override
+            public void onCountryMealsSuccess(List<Meal> meals) {
+
+            }
+
 
             @Override
             public void onFailure(Throwable throwable) {

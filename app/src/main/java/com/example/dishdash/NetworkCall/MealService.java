@@ -15,6 +15,10 @@ public interface MealService {
 
 
     @GET("filter.php")
-    Call<CategoryResponse> getMealsByCategory(@Query("c") String category);
+    Call<MealResponse> getMealsByCategory(@Query("c") String category);
+
+    @GET("lookup.php")
+    Call<MealResponse> getMealById(@Query("i") int id);
+
 
 }

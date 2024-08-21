@@ -48,6 +48,11 @@ public void getDailyMeals() {
         }
 
         @Override
+        public void onCountryMealsSuccess(List<Meal> meals) {
+
+        }
+
+        @Override
         public void onFailure(Throwable throwable) {
 
             if (view != null) {

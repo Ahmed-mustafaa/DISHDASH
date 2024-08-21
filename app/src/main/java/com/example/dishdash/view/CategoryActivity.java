@@ -11,27 +11,25 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.example.dishdash.NetworkCall.CategoryCallBack;
 import com.example.dishdash.NetworkCall.MealsRemoteDataSourceImpl;
 import com.example.dishdash.R;
-import com.example.dishdash.model.Category;
-import com.example.dishdash.model.DisplayItem;
 import com.example.dishdash.model.Meal;
-import com.example.dishdash.presenter.CategoryMealsPresenter;
+import com.example.dishdash.presenter.FilterMealsPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategoryActivity extends AppCompatActivity implements CategoryMealsView{
-public static final String NAMEFROMDASHBORADACTIVITY = "Name from Dashboard Activity";
+public class CategoryActivity extends AppCompatActivity implements CategoryMealsView {
+    public static final String NAMEFROMDASHBORADACTIVITY = "Name from Dashboard Activity";
     MealsAdapter MealsAdapter;
     private List<Meal> meals = new ArrayList<>(); // Declare items as a class member
 
-    public  CategoryMealsPresenter presenter;
-  CategoryMealsView view;
+    public FilterMealsPresenter presenter;
+    CategoryMealsView view;
     private TextView mealDescription;
     private TextView greeting;
 
@@ -43,8 +41,11 @@ public static final String NAMEFROMDASHBORADACTIVITY = "Name from Dashboard Acti
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.category_country_meals_layout); // Or your layout file
-
+        Rec = findViewById(R.id.meals_recyclerview);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2); // 2 columns
         MealsAdapter = new MealsAdapter(this, meals, true);
+        Rec.setAdapter(MealsAdapter); // Set adapter initially
+
         String categoryName = null;
         String countryName = null;
         Intent intent = getIntent();
@@ -56,45 +57,33 @@ public static final String NAMEFROMDASHBORADACTIVITY = "Name from Dashboard Acti
             Log.i(NAMEFROMDASHBORADACTIVITY, "onCreate: " + countryName);
         }
 
-        Rec = findViewById(R.id.meals_recyclerview);
         greeting = findViewById(R.id.user_greeting);
         progress = findViewById(R.id.lottieProgress);
         cardView = findViewById(R.id.user_greeting_card);
-
-        new Handler().postDelayed(new Runnable() {
-
+        Handler handler = new Handler();
+        handler.post(new Runnable() {
             @Override
             public void run() {
-                hideLoading();
+                progress.setVisibility(View.GONE);
+                cardView.setVisibility(View.VISIBLE);
+                Rec.setVisibility(View.VISIBLE);
+                greeting.setVisibility(View.VISIBLE);
+                cardView.findViewById(View.VISIBLE);
+
             }
-        }, 6000);
-        presenter = new CategoryMealsPresenter(this, new MealsRemoteDataSourceImpl());
+        });
+
+        presenter = new FilterMealsPresenter(this, new MealsRemoteDataSourceImpl());
         if (categoryName != null) {
-            presenter.fetchMealsByCategories(categoryName, new CategoryCallBack() {
-                @Override
-                public void onSuccess(List<Meal> meals) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            MealsAdapter.setMeals(meals, false);
-                            Rec.setAdapter(MealsAdapter);
+            presenter.fetchMealsByCategories(categoryName);
 
-                        }
-                    });
-                }
-
-                @Override
-                public void onSuccessCategory(List<Category> categories) {
-
-                }
-
-                @Override
-                public void onFailure(Throwable t) {
-                    new Throwable(t.getMessage());
-                }
-            });
-
+        } else if (countryName != null) {
+            presenter.fetchMealsByCountries(countryName);
         }
+
+        showLoading();
+    }
+
        /* else if (countryName != null) {
             presenter.fetchMealsByCountry(countryName, new CategoryCallBack() {
                 @Override
@@ -108,32 +97,42 @@ public static final String NAMEFROMDASHBORADACTIVITY = "Name from Dashboard Acti
                         }
                     });
                 }*/
+
+
+        @Override
+        public void showLoading () {
+            Handler handler = new Handler();
+
+
+            progress.setVisibility(View.VISIBLE);
+
+        }
+
+
+        @Override
+        public void hideLoading () {
+            progress.setVisibility(View.GONE);
+
+
+        }
+
+        @Override
+        public void showMeals (List < Meal > meals) {
+            hideLoading();
+            if (meals != null && !meals.isEmpty()) {
+                this.meals.clear();
+                this.meals.addAll(meals);
+                MealsAdapter.setMeals(meals, true);
+                Log.i(NAMEFROMDASHBORADACTIVITY, "showMeals: " + meals);
+                // Update the adapter's data
+            } else {
+                Toast.makeText(this, "No meals available", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        public void showError (String message){
+            Toast.makeText(this, "Erorr", Toast.LENGTH_SHORT).show();
+        }
     }
 
-
-    @Override
-    public void showLoading() {
-
-        progress.setVisibility(View.VISIBLE);
-
-    }
-
-    @Override
-    public void hideLoading() {
-        progress.setVisibility(View.GONE);
-        Rec.setVisibility(View.VISIBLE);
-        greeting.setVisibility(View.VISIBLE);
-        cardView.findViewById(View.VISIBLE);
-
-    }
-
-    @Override
-    public void showMeals(List<Meal> meals) {
-
-    }
-
-    @Override
-    public void showError(String message) {
-        Toast.makeText(this, "Erorr", Toast.LENGTH_SHORT);
-    }
-}
