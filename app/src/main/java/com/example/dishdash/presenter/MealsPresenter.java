@@ -10,10 +10,13 @@ import com.example.dishdash.NetworkCall.MealsRemoteDataSourceImpl;
 import com.example.dishdash.NetworkCall.NetworkCallBack;
 import com.example.dishdash.model.Category;
 import com.example.dishdash.model.Country;
+import com.example.dishdash.model.Ingredient;
 import com.example.dishdash.model.Meal;
 import com.example.dishdash.view.MealsView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -24,6 +27,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MealsPresenter {
     private MealsView view;
     private MealService mealService;
+
+    private boolean isFabOpen = false;
+
     private MealsRemoteDataSourceImpl MealsRemoteDataSourceImpl;
 
     public MealsPresenter(MealsView view, MealsRemoteDataSourceImpl MealsRemoteDataSourceImpl) {
@@ -80,6 +86,11 @@ MealsRemoteDataSourceImpl.getCategories(new NetworkCallBack() {
     }
 
     @Override
+    public void onIngredientsSuccess( List<Map<String,String>>ingredients) {
+
+    }
+
+    @Override
     public void onFailure(Throwable t) {
 
     }
@@ -107,6 +118,13 @@ MealsRemoteDataSourceImpl.getCategories(new NetworkCallBack() {
 
             }
         });
+    }
+    public void onFabClicked(boolean isFabOpen) {
+        if (isFabOpen) {
+            view.showFABOptions();
+        } else {
+            view.hideFABOptions();
+        }
     }
 }
 

@@ -8,10 +8,10 @@ import com.example.dishdash.model.Meal;
 import java.util.List;
 
 public interface ProductsLocalDataSource {
-      void insertProducts(Meal meal);
-      void deleteProducts(Meal meal);
+      void insertMeal(Meal meal);
+      void deleteMeal(Meal meal);
        LiveData<List<Meal>>getSortedMeals();
        MealDAO mealDAO();
-    void updateProduct(Meal meal);
+    void updateMeal(Meal meal);
 
 }

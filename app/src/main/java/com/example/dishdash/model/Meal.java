@@ -8,6 +8,9 @@ import androidx.room.PrimaryKey;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 @Entity(tableName = "meals")
 
 public class Meal{
@@ -67,6 +70,7 @@ public class Meal{
     public String strMeasure19;
     public String strMeasure20;
     public String strSource;
+//    public List<Map<String,String>> ingredients;
    // public Object strImageSource;
     //public Object strCreativeCommonsConfirmed;
     //public Object dateModified;
@@ -92,6 +96,7 @@ public class Meal{
         this.strDrinkAlternate = strDrinkAlternate;
     }
 */
+
     public String getStrCategory() {
         return strCategory;
     }
@@ -499,5 +504,9 @@ public class Meal{
     public static class Root{
         public ArrayList<Meal> meals;
     }
+
+
+
+
 }
 

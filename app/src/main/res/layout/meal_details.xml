@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#C9DABA"
-    tools:context=".mealDetailsFragment">
+    android:background="#AEC9DABA"
+    tools:context=".view.MealDetailsActivity">
 
     <!-- Title of the meal -->
     <TextView
@@ -33,7 +33,6 @@
         <!-- Time Icon + Text -->
 
 
-
         <!-- People Icon + Text -->
         <LinearLayout
             android:layout_width="wrap_content"
@@ -48,15 +47,17 @@
         <LinearLayout
             android:layout_width="50dp"
             android:layout_height="match_parent"
-            android:orientation="vertical"/>
+            android:orientation="vertical" />
     </LinearLayout>
 
     <!-- Meal Image -->
     <ImageView
         android:id="@+id/meal_image"
-        android:layout_width="wrap_content"
-        android:layout_height="200dp"
+        android:layout_width="405dp"
+        android:layout_height="256dp"
         android:layout_marginTop="16dp"
+        android:background="#FFFFFF"
+        android:backgroundTint="#79FFFFFF"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/meal_info_container" />
@@ -82,7 +83,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="700dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -104,21 +105,28 @@
                     android:text="Melt 2 tablespoons butter in a large skillet over medium high heat. Add shrimp, salt, and pepper, to taste. Cook, stirring occasionally, until pink, about 2-3 minutes; set aside."
                     android:textColor="@color/black" />
 
-                <!-- Repeat the above TextView for more steps or dynamically load from code -->
+                <WebView
+                    android:id="@+id/webView"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="16dp"></WebView>
 
             </LinearLayout>
+
         </androidx.core.widget.NestedScrollView>
+
     </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/ingredientsRecyclerView"
-        android:layout_width="229dp"
-        android:layout_height="93dp"
-        android:layout_marginStart="68dp"
-        android:layout_marginTop="37dp"
+        android:layout_width="387dp"
+        android:layout_height="122dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="152dp"
+        android:background="#BEC9DABA"
+        android:backgroundTint="#BEC9DABA"
         android:orientation="horizontal"
         android:scrollbars="horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_meal_title" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

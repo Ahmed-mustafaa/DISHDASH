@@ -1,7 +1,5 @@
 package com.example.dishdash.NetworkCall;
 
-import com.example.dishdash.model.Meal;
-
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;

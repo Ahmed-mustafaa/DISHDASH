@@ -1,6 +1,9 @@
 package com.example.dishdash.view;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +12,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import androidx.fragment.app.FragmentContainerView;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,11 +31,11 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.ViewHolder> 
     private Context mContext;
 
     private List<Meal> meals;
-    boolean isCategoryMeals=false;
+    boolean isCategoryMeals = false;
 
     private static final String TAG = "Adapter";
 
-    public MealsAdapter(Context mContext, List<Meal> meals, boolean isCategoryMeals) {
+    public MealsAdapter(AppCompatActivity mContext, List<Meal> meals, boolean isCategoryMeals) {
         this.mContext = mContext;
         this.meals = meals;
         this.isCategoryMeals = isCategoryMeals;
@@ -38,10 +47,6 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.ViewHolder> 
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup recycler, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(recycler.getContext());
         View vh;
-       /* if (isCategoryMeals) {
-
-            vh= inflater.inflate(R.layout.countries_layout, recycler, false);
-        } else {*/
             vh = inflater.inflate(R.layout.categories_items, recycler, false);
 
         return new ViewHolder(vh);
@@ -52,6 +57,7 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.ViewHolder> 
         Meal meal = meals.get(position); // Get Meal object at the current position
         holder.mealId= Integer.parseInt(meal.getIdMeal());
         holder.MealName.setText(meal.getStrMeal());
+
         if (meal != null && meal.getStrMealThumb() != null) {
             // Check if ImageView is not null
             if (holder.categoryI_Img != null) {
@@ -68,19 +74,15 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.ViewHolder> 
 
         }
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // safeArgs passing mealName to the fragment to display its details
-   int mealId= Integer.parseInt(meals.get(holder.getAdapterPosition()).getIdMeal());
-                String mealName = meals.get(holder.getAdapterPosition()).getStrMeal();
-                String mealThumb = meal.getStrMealThumb();
-                CategoryActivityDirections.ActionCategoryActivityToMealDetailsFragment action =
-                        CategoryActivityDirections.actionCategoryActivityToMealDetailsFragment(mealName, mealThumb, mealId);
-                Navigation.findNavController(v).navigate(action);
+        holder.itemView.setOnClickListener(v -> {
 
-                // Navigate to MealDetailsFragment
-            }
+            Log.i(TAG, "Item clicked: " + holder.getAdapterPosition());
+            int mealId = Integer.parseInt(meals.get(holder.getAdapterPosition()).getIdMeal());
+            Log.i(TAG, "Meal ID : " + mealId);
+            Intent intent = new Intent(v.getContext(), MealDetailsActivity.class);
+            intent.putExtra("mealId", mealId);
+            v.getContext().startActivity(intent);
+
         });
     }
 
@@ -107,11 +109,6 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.ViewHolder> 
 
             }
 
-
-            /* else {
-                MealName = itemView.findViewById(R.id.category_name);
-                categoryI_Img = itemView.findViewById(R.id.categoryI_Img);
-            }*/
 
 
     }

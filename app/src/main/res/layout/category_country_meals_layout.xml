@@ -5,9 +5,7 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.DashBoardActivity">
-
-
+    tools:context=".view.CategoryActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
@@ -16,6 +14,7 @@
         android:background="#FFFEFE"
         app:layout_anchor="@+id/constraintLayout"
         app:layout_anchorGravity="center">
+
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lottieProgress"
             android:layout_width="289dp"
@@ -77,8 +76,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/user_greeting_card"
-            app:spanCount="2">
+            app:spanCount="2" />
 
-        </androidx.recyclerview.widget.RecyclerView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

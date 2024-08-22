@@ -1,5 +1,6 @@
 package com.example.dishdash.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
@@ -25,8 +26,10 @@ import com.example.dishdash.R;
 import com.example.dishdash.model.Category;
 import com.example.dishdash.model.Country;
 import com.example.dishdash.model.DisplayItem;
+import com.example.dishdash.model.Ingredient;
 import com.example.dishdash.model.Meal;
 import com.example.dishdash.presenter.MealsPresenter;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -35,6 +38,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class DashBoardActivity extends AppCompatActivity implements MealsView {
@@ -53,19 +57,22 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
     RecyclerView recyclerView2;
     CountriesAdapter dAdapter;
     CountriesAdapter CategoriesAdapter;
+    FloatingActionButton fab;
+    FloatingActionButton fabLogout;
+    FloatingActionButton fabCreatePlan;
+    boolean isFabOpen = false;
+
+    NavController navController;
     private List<DisplayItem> countryitems = new ArrayList<>(); // Declare items as a class member
     private List<DisplayItem> categoryitems = new ArrayList<>(); // Declare items as a class member
 
-    View categories;
-    View countries;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash_board);
         navigationView = findViewById(R.id.navigation);
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        NavigationUI.setupWithNavController(navigationView, navController);
         greeting = findViewById(R.id.user_greeting);
         howIsItGoing = findViewById(R.id.HowIsItGOing);
         recyclerView = findViewById(R.id.countries_recyclerview);
@@ -94,6 +101,10 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
                         howIsItGoing.setVisibility(View.VISIBLE);
                         recyclerView.setVisibility(View.VISIBLE);
                         recyclerView2.setVisibility(View.VISIBLE);
+                        fab = findViewById(R.id.extendedFloatingActionButton);
+                        fab.setVisibility(View.VISIBLE);
+                        fabLogout = findViewById(R.id.fab_log_out);
+                        fabCreatePlan = findViewById(R.id.fab_create_plan);
                     }
                 }, 6000);
             } else {
@@ -117,10 +128,6 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
         mealDescription.setVisibility(View.GONE);
         progress.setVisibility(View.VISIBLE);
         cardView.setVisibility(View.GONE);
-        categories =  findViewById(R.id.view);
-        categories.setVisibility(View.GONE);
-        countries = findViewById(R.id.view2);
-        countries.setVisibility(View.GONE);
         todaysMeals.setVisibility(View.GONE);
 
         Handler handler = new Handler();
@@ -141,6 +148,25 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
 
             }
         }, 6000);
+        // Set click listener for main FAB
+        fab.setOnClickListener(v -> {
+            isFabOpen = !isFabOpen;
+            presenter.onFabClicked(isFabOpen);
+        });
+
+        // Handle other FAB button click events
+        fabLogout.setOnClickListener(v -> {
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(DashBoardActivity.this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        });
+
+        fabCreatePlan.setOnClickListener(v -> {
+            Intent intent = new Intent(DashBoardActivity.this, CreatePlanActivity.class);
+            startActivity(intent);
+        });
 
         mealImage.setOnTouchListener( (v, event) -> {
             switch (event.getAction()) {
@@ -197,8 +223,15 @@ Toast.makeText(DashBoardActivity.this, "Failed to load countries", Toast.LENGTH_
                     public void run() {
                         showAllCategories(categories);
                     }
-            });
+                });
             }
+
+            @Override
+            public void onIngredientsSuccess(List<Map<String, String>> ingredients) {
+
+            }
+
+
 
             @Override
             public void onFailure(Throwable t) {
@@ -212,7 +245,7 @@ Toast.makeText(DashBoardActivity.this, "Failed to load categories", Toast.LENGTH
 
     }
 
-    private void loadAvatarImage() {
+    public void loadAvatarImage() {
         // Assume that the user's avatar is stored in Firebase Storage under "avatars/userId.jpg"
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
@@ -249,6 +282,18 @@ Toast.makeText(DashBoardActivity.this, "Failed to load categories", Toast.LENGTH
     public void showDailyMeals(List<Meal> meals) {
         /*dAdapter.setMeals(meals);*/
         dAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showFABOptions() {
+         fab.show();
+         fabCreatePlan.show();
+    }
+
+    @Override
+    public void hideFABOptions() {
+        fab.hide();
+        fabCreatePlan.hide();
     }
 
     @Override
