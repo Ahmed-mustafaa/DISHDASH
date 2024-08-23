@@ -3,17 +3,14 @@ package com.example.dishdash.presenter;
 import androidx.annotation.NonNull;
 
 import com.example.dishdash.NetworkCall.CountryCallBack;
-import com.example.dishdash.NetworkCall.DailyMealsCall;
 import com.example.dishdash.NetworkCall.MealResponse;
 import com.example.dishdash.NetworkCall.MealService;
 import com.example.dishdash.NetworkCall.MealsRemoteDataSourceImpl;
 import com.example.dishdash.NetworkCall.NetworkCallBack;
 import com.example.dishdash.model.Category;
 import com.example.dishdash.model.Country;
-import com.example.dishdash.model.Ingredient;
 import com.example.dishdash.model.Meal;
 import com.example.dishdash.view.MealsView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 import java.util.Map;
@@ -75,6 +72,11 @@ MealsRemoteDataSourceImpl.getCategories(new NetworkCallBack() {
 
     @Override
     public void onSuccess(Meal meal) {
+
+    }
+
+    @Override
+    public void onSuccess(List<Meal> meal) {
 
     }
 

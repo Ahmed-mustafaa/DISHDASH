@@ -5,7 +5,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,6 +33,8 @@ import com.example.dishdash.model.DisplayItem;
 import com.example.dishdash.model.Ingredient;
 import com.example.dishdash.model.Meal;
 import com.example.dishdash.presenter.MealsPresenter;
+import com.example.dishdash.view.SearchAvtivity.SearchActivity;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,11 +49,11 @@ import java.util.stream.Collectors;
 
 public class DashBoardActivity extends AppCompatActivity implements MealsView {
     private ImageView avatarImageView;
-    NavigationView navigationView;
     private TextView mealName;
     private TextView mealDescription;
     private TextView greeting;
     private TextView howIsItGoing;
+    long delay = 100;
     TextView todaysMeals;
     private ImageView mealImage;
     private MealsPresenter presenter;
@@ -61,18 +67,38 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
     FloatingActionButton fabLogout;
     FloatingActionButton fabCreatePlan;
     boolean isFabOpen = false;
-
-    NavController navController;
+    LottieAnimationView SearchIcon;
     private List<DisplayItem> countryitems = new ArrayList<>(); // Declare items as a class member
     private List<DisplayItem> categoryitems = new ArrayList<>(); // Declare items as a class member
-
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash_board);
-        navigationView = findViewById(R.id.navigation);
+
+        // Ensure the NavHostFragment is not null
+
+                // Initially, set FragmentContainerView visibility to GONE
+                SearchIcon = findViewById(R.id.search_icon);
+                SearchIcon.setOnClickListener(new View.OnClickListener() {
+                                                  @Override
+                                                  public void onClick(View v) {
+Intent intent = new Intent(DashBoardActivity.this, SearchActivity.class);
+startActivity(intent);
+                                                  }
+                                              });
+
+
+
+
+        fab = findViewById(R.id.FloatingActionButton);
+        fab.setVisibility(View.VISIBLE);
+        fabLogout = findViewById(R.id.fab_log_out);
+        fabCreatePlan = findViewById(R.id.fab_create_plan);
+        Animation scaleUp = AnimationUtils.loadAnimation(this, R.anim.scaleup);
+        LinearLayout FloatingActionButtons = findViewById(R.id.Linear);
+
         greeting = findViewById(R.id.user_greeting);
         howIsItGoing = findViewById(R.id.HowIsItGOing);
         recyclerView = findViewById(R.id.countries_recyclerview);
@@ -80,7 +106,6 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
         recyclerView2.setHasFixedSize(true);
         recyclerView2.setVisibility(View.GONE);
         recyclerView2.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setVisibility(View.GONE);
@@ -89,6 +114,8 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
         CategoriesAdapter = new CountriesAdapter(DashBoardActivity.this, categoryitems); // Create adapter instance with empty list
         recyclerView.setAdapter(dAdapter);
         recyclerView2.setAdapter(CategoriesAdapter);
+
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             String displayName = user.getDisplayName();
@@ -101,10 +128,6 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
                         howIsItGoing.setVisibility(View.VISIBLE);
                         recyclerView.setVisibility(View.VISIBLE);
                         recyclerView2.setVisibility(View.VISIBLE);
-                        fab = findViewById(R.id.extendedFloatingActionButton);
-                        fab.setVisibility(View.VISIBLE);
-                        fabLogout = findViewById(R.id.fab_log_out);
-                        fabCreatePlan = findViewById(R.id.fab_create_plan);
                     }
                 }, 6000);
             } else {
@@ -142,17 +165,34 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
                 mealImage.setVisibility(View.VISIBLE);
                 cardView.setVisibility(View.VISIBLE);
                 todaysMeals.setVisibility(View.VISIBLE);
-             /*   findViewById(R.id.view).setVisibility(View.VISIBLE);
-                findViewById(R.id.view2).setVisibility(View.VISIBLE);*/
-
 
             }
         }, 6000);
-        // Set click listener for main FAB
-        fab.setOnClickListener(v -> {
-            isFabOpen = !isFabOpen;
-            presenter.onFabClicked(isFabOpen);
-        });
+
+
+                                    fab.setOnClickListener(v -> {
+
+                                        if (!isFabOpen) {
+                                            fabCreatePlan.postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    fabLogout.startAnimation(scaleUp);
+                                                }
+                                            }, delay);
+                                            delay += 50;
+                                            fab.setImageResource(R.drawable.x);
+                                            FloatingActionButtons.setVisibility(View.VISIBLE);
+                                            isFabOpen = true;
+                                        } else {
+                                          //  fab.setImageResource(R.drawable.add__2_);
+
+                                            FloatingActionButtons.setVisibility(View.GONE);
+                                            isFabOpen = false;
+                                        }
+                                        presenter.onFabClicked(isFabOpen);
+                                    });
+
+
 
         // Handle other FAB button click events
         fabLogout.setOnClickListener(v -> {
@@ -212,6 +252,11 @@ Toast.makeText(DashBoardActivity.this, "Failed to load countries", Toast.LENGTH_
         MealsRemoteDataSourceImpl.getInstance().getCategories(new NetworkCallBack() {
             @Override
             public void onSuccess(Meal meal) {
+
+            }
+
+            @Override
+            public void onSuccess(List<Meal> meal) {
 
             }
 
@@ -324,16 +369,3 @@ Toast.makeText(DashBoardActivity.this, "Failed to load categories", Toast.LENGTH
 
 
 }
-/* navigationView.setNavigationItemSelectedListener(item -> {
-            switch (item.getItemId()){
-                case R.id.categories:
-                    navController.navigate(R.id.categoriesFragment);
-                    break;
-                case R.id.countries:
-                    navController.navigate(R.id.countriesFragment);
-                    break;
-            }
-            DrawerLayout drawer = findViewById(R.id.drawer_layout); // Assuming you have a DrawerLayout with this ID
-            drawer.closeDrawer(GravityCompat.START);
-            return true;
-        });*/

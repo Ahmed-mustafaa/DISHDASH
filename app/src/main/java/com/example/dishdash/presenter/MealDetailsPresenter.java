@@ -28,6 +28,11 @@ public class MealDetailsPresenter {
             }
 
             @Override
+            public void onSuccess(List<Meal> meal) {
+
+            }
+
+            @Override
             public void onSuccessCategory(List<Category> categories) {
 
             }

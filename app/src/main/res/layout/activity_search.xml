@@ -1,0 +1,97 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EAF0E3"
+    tools:context=".view.SearchAvtivity.SearchActivity">
+
+    <!-- Lottie Loader -->
+    <!-- Search Bar -->
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/progress"
+        cropToFrame="true"
+        layout_centeterInParent="true"
+        android:layout_width="289dp"
+        android:layout_height="250dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="224dp"
+        android:layout_marginEnd="16dp"
+        android:elevation="50dp"
+        android:scaleX="1.5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.5"
+        app:layout_constraintHorizontal_bias="0.196"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.5"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/progressmeals"
+        app:lottie_speed="1.2" />
+
+    <EditText
+        android:id="@+id/searchBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:hint="Search"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Country Chip -->
+    <com.google.android.material.chip.Chip
+        android:id="@+id/countryChip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Country ▼"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchBar"
+        android:textColor="#000000"/>
+
+    <!-- Category Chip -->
+    <com.google.android.material.chip.Chip
+        android:id="@+id/categoryChip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Category ▼"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/countryChip"
+        app:layout_constraintTop_toBottomOf="@id/searchBar"
+        android:textColor="#000000"/>
+
+    <!-- RecyclerView for Country List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/countryRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/countryChip"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <!-- RecyclerView for Category List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/categoryRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/categoryChip"
+        app:layout_constraintBottom_toBottomOf="parent" /> <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/mealsRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/categoryChip"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

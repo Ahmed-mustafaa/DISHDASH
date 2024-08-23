@@ -225,38 +225,50 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/extendedFloatingActionButton"
-            android:layout_width="60dp"
-            android:layout_height="57dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="77dp"
-            android:backgroundTint="@color/primary"
-            app:cornerRadius="20dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_log_out"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="bottom|end"
-            android:layout_marginBottom="90dp"
+            android:id="@+id/FloatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_margin="16dp"
             android:layout_marginEnd="16dp"
-            android:src="@drawable/baseline_logout_24"
-            android:visibility="gone"/>
+            android:src="@drawable/add__3_"
+            app:backgroundTint="@color/primary"
+            app:layout_constraintEnd_toEndOf="@id/countries_recyclerview"
+            app:layout_constraintTop_toBottomOf="@+id/countries_recyclerview"
+            app:rippleColor="@color/primary" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_create_plan"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="bottom|end"
-            android:layout_marginBottom="150dp"
+        <LinearLayout
+            android:id="@+id/Linear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:src="@drawable/baseline_playlist_add_24"
-            android:visibility="gone"/>
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/imageView2"
+            app:layout_constraintEnd_toEndOf="parent">
 
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_log_out"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:contentDescription="logout"
+                app:srcCompat="@drawable/baseline_logout_24"
+                app:tint="@null" />
 
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_create_plan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_margin="20dp"
+                android:contentDescription="createPlan"
+
+                app:rippleColor="@color/white"
+                app:srcCompat="@drawable/baseline_playlist_add_24"
+                app:tint="@null" />
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.bottomappbar.BottomAppBar
@@ -301,7 +313,7 @@
 
             <!-- Settings Icon -->
             <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/settings_icon"
+                android:id="@+id/search_icon"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"

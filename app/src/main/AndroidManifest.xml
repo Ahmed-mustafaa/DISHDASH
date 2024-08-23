@@ -15,6 +15,9 @@
         android:theme="@style/Theme.DISHDASH"
         tools:targetApi="31">
         <activity
+            android:name=".view.SearchAvtivity.SearchActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.CreatePlanActivity"
             android:exported="false" />
         <activity
