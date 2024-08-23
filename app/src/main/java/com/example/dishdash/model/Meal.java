@@ -18,9 +18,12 @@ public class Meal{
     @NonNull
     @SerializedName("idMeal")
     public String idMeal;
+    public String userId;
     @SerializedName("strMeal")
     public String strMeal;
+    private boolean isFavorite;
 /*
+
     public Object strDrinkAlternate;
 */
     public String strCategory;
@@ -52,6 +55,15 @@ public class Meal{
     public String strMeasure1;
     public String strMeasure2;
     public String strMeasure3;
+
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
+    }
+
     public String strMeasure4;
     public String strMeasure5;
     public String strMeasure6;

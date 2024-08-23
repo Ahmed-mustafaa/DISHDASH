@@ -16,15 +16,17 @@ import java.util.List;
 public interface MealDAO {
     @Query("SELECT * FROM meals")
     LiveData<List<Meal>> getAllProducts();
+    @Query("UPDATE meals SET isFavorite = :isFav WHERE idMeal = :mealId")
+    void updateFavoriteStatus(String mealId, boolean isFav);
 
-  /* @Query("SELECT * FROM meals WHERE isFavorite = 1")
-    LiveData<List<Product>> getFavoriteProducts();
-*/
-
+   @Query("SELECT * FROM meals WHERE isFavorite = 1")
+    LiveData<List<Meal>> getFavoriteMeals();
+    @Query("SELECT * FROM meals WHERE isFavorite = 1 AND userId = :userId")
+    LiveData<List<Meal>> getFavoritesByUserId(String userId);
+    @Query("DELETE FROM meals WHERE userId = :userId")
+    void deleteMealsByUserId(String userId);
     @Insert
-    void insertProduct(Meal meal);
-    @Delete
-    void deleteProduct(Meal meal);
-@Update
-    void updateMeal(Meal meal);
+    void insertMeal(Meal meal);
+@Delete
+    void deleteMeal(Meal product);
 }

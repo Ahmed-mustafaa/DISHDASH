@@ -5,16 +5,18 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
+    app:cardBackgroundColor="@android:color/white"
     app:cardCornerRadius="8dp">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="184dp">
 
         <ImageView
             android:id="@+id/categoryI_Img"
-            android:layout_width="227dp"
-            android:layout_height="129dp"
-            android:layout_marginTop="8dp"
+            android:layout_width="285dp"
+            android:layout_height="161dp"
+            android:layout_marginTop="4dp"
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -24,19 +26,32 @@
 
         <TextView
             android:id="@+id/category_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="#222D3143"
-            android:padding="8dp"
+            android:layout_width="268dp"
+            android:layout_height="59dp"
+            android:layout_marginTop="100dp"
+            android:layout_marginEnd="44dp"
+            android:background="#922D3143"
             android:textAlignment="center"
-            android:textColor="@android:color/black"
+            android:textColor="@color/primary"
             android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/categoryI_Img"
+            app:layout_constraintEnd_toEndOf="@+id/categoryI_Img"
+            app:layout_constraintTop_toTopOf="@+id/categoryI_Img"
             tools:text="Category Name" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/heart_icon"
+        android:layout_width="53dp"
+        android:layout_height="45dp"
+
+        android:layout_marginStart="120dp"
+        android:layout_marginTop="152dp"
+        android:layout_weight="0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="false"
+        app:lottie_rawRes="@raw/favorite" />
 </androidx.cardview.widget.CardView>

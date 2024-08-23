@@ -12,6 +12,9 @@
     import androidx.appcompat.app.AppCompatActivity;
 
     import com.example.dishdash.R;
+    import com.example.dishdash.db.AppData;
+    import com.example.dishdash.view.Favorites.FavoritesActivity;
+    import com.example.dishdash.view.SignUP.SignUpActivity;
     import com.google.android.gms.auth.api.signin.GoogleSignIn;
     import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
     import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -34,6 +37,8 @@
         private TextInputLayout nameLayout, passwordLayout;
         Button login;
         Button logGoogle;
+         Button continueAsGuestButton;
+
         private GoogleSignInClient mGoogleSignInClient;
         private FirebaseAuth mAuth;
 
@@ -48,6 +53,7 @@
             passwordLayout = findViewById(R.id.password_layout);
             login = findViewById(R.id.login_button);
             logGoogle = findViewById(R.id.google_sign_in_button);
+            continueAsGuestButton = findViewById(R.id.continue_as_guest_button);
             mAuth = FirebaseAuth.getInstance();
             GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestIdToken(getString(R.string.default_web_client_id))
@@ -60,10 +66,18 @@
             login.setOnClickListener(v -> {
                 String Name = name.getText().toString();
                 String Password = password.getText().toString();
-                validate(Name, Password);
+                signInWithEmailPassword(Name, Password);
 
             });
+            continueAsGuestButton.setOnClickListener(v -> {
+                // Proceed as a guest
+                Intent intent = new Intent(LoginActivity.this, DashBoardActivity.class);
+                AppData.getInstance().setGuest(true);
 
+                intent.putExtra("isGuest", true); // Pass a flag to indicate guest mode
+                startActivity(intent);
+                finish();
+            });
 
             signLink = findViewById(R.id.sign_up_link);
             signLink.setOnClickListener(v -> {
@@ -80,6 +94,34 @@
                 Intent signInIntent = mGoogleSignInClient.getSignInIntent();
                 startActivityForResult(signInIntent, RC_SIGN_IN);
             }
+        private void signInWithEmailPassword(String email, String password) {
+            mAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, task -> {
+                        if (task.isSuccessful()) {
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            if (user != null) {
+                                String userId = user.getUid();
+                                SharedPreferences sharedPreferences = getSharedPreferences("app_prefs", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString("user_id", userId);
+                                editor.apply();
+                                Intent intent = new Intent(LoginActivity.this, DashBoardActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        } else {
+                            Toast.makeText(this, "Login Failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
+
+        private void clearPreviousSession() {
+            SharedPreferences preferences = getSharedPreferences("app_prefs", MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.clear(); // Clear all stored data
+            editor.apply();
+        }
+
         @Override
         protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
@@ -104,13 +146,23 @@
             mAuth.signInWithCredential(credential)
                     .addOnCompleteListener(this, task -> {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
+                            if (user != null) {
+                                String userId = user.getUid();
+                                SharedPreferences sharedPreferences = getSharedPreferences("app_prefs", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString("user_id", userId);
+                                editor.apply();
+                                Toast.makeText(this, "Authentication Successful.", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(LoginActivity.this, DashBoardActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
                             Toast.makeText(this, "Authentication Successful.", Toast.LENGTH_SHORT).show();
                             // Redirect to MainActivity or another activity
-                            Intent intent = new Intent(LoginActivity.this, DashBoardActivity.class);
+                           /* Intent intent = new Intent(LoginActivity.this, DashBoardActivity.class);
                             startActivity(intent);
-                            finish();
+                            finish();*/
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
@@ -118,20 +170,10 @@
                     });
         }
 
-        boolean validate(String name, String password) {
-            SharedPreferences sharedPreferences = getSharedPreferences("userData", MODE_PRIVATE);
-            String storedName = sharedPreferences.getString("name", null);
-            String storedPassword = sharedPreferences.getString("password", null);
 
-            if (storedName != null && storedPassword != null && storedName.equals(name) && storedPassword.equals(password)) {
-                Toast.makeText(this, "Welcome back", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(LoginActivity.this, DashBoardActivity.class);
-                startActivity(intent);
-                return true;
-            } else {
-                Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT).show();
-                return false;
-            }
+
+
+
         }
-    }
+
         

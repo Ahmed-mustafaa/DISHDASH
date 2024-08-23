@@ -19,7 +19,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Timer, People, Calories Section -->
     <LinearLayout
         android:id="@+id/meal_info_container"
         android:layout_width="wrap_content"
@@ -30,7 +29,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_meal_title">
 
-        <!-- Time Icon + Text -->
 
 
         <!-- People Icon + Text -->
@@ -86,11 +84,23 @@
                 android:layout_height="700dp"
                 android:orientation="vertical">
 
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/heart_icon"
+                    android:layout_width="53dp"
+                    android:layout_height="45dp"
+                    android:layout_marginStart="130dp"
+                    android:layout_weight="0"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="false"
+                    app:lottie_rawRes="@raw/favorite" />
+
                 <TextView
                     android:id="@+id/directionsTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginBottom="10dp"
                     android:text="Directions"
                     android:textColor="@color/black"
                     android:textSize="18sp"

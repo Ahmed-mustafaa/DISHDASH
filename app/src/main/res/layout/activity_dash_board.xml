@@ -226,49 +226,30 @@
             app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/FloatingActionButton"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_margin="16dp"
-            android:layout_marginEnd="16dp"
-            android:src="@drawable/add__3_"
-            app:backgroundTint="@color/primary"
-            app:layout_constraintEnd_toEndOf="@id/countries_recyclerview"
-            app:layout_constraintTop_toBottomOf="@+id/countries_recyclerview"
-            app:rippleColor="@color/primary" />
-
         <LinearLayout
             android:id="@+id/Linear"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
+            android:layout_width="86dp"
+            android:layout_height="179dp"
+            android:layout_marginBottom="30dp"
             android:orientation="vertical"
-            android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@+id/imageView2"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab_log_out"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:contentDescription="logout"
-                app:srcCompat="@drawable/baseline_logout_24"
-                app:tint="@null" />
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="60dp"
+                android:src="@drawable/baseline_logout_24"
+                android:visibility="visible"
+                app:backgroundTint="#D39741"
+                app:rippleColor="#AA0202" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab_create_plan"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
 
-                android:layout_margin="20dp"
-                android:contentDescription="createPlan"
-
-                app:rippleColor="@color/white"
-                app:srcCompat="@drawable/baseline_playlist_add_24"
-                app:tint="@null" />
         </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.bottomappbar.BottomAppBar
@@ -301,7 +282,7 @@
                 app:lottie_loop="false"
                 app:lottie_rawRes="@raw/home" />
 
-            <!-- Profile Icon -->
+            <!-- Heart Icon -->
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/heart_icon"
                 android:layout_width="0dp"

@@ -5,18 +5,20 @@
     android:id="@+id/meal_item_layout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="#A8FFFFFF">
+    android:background="#1BFFFFFF"
+    app:circularflow_angles="150dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="197dp"
         android:layout_height="57dp"
         android:layout_marginStart="4dp"
-        android:foregroundTint="#B7FFFFFF"
-        app:cardBackgroundColor="@color/primary"
+        app:cardBackgroundColor="#B2C1D8C3"
+        app:cardCornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
 
 
         <TextView

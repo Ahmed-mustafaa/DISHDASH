@@ -2,6 +2,7 @@ package com.example.dishdash.presenter;
 
 import com.example.dishdash.NetworkCall.MealsRemoteDataSourceImpl;
 import com.example.dishdash.NetworkCall.NetworkCallBack;
+import com.example.dishdash.db.MealsLocalDataSourceImpl;
 import com.example.dishdash.model.Category;
 import com.example.dishdash.model.Ingredient;
 import com.example.dishdash.model.Meal;
@@ -13,11 +14,13 @@ import java.util.Map;
 
 public class MealDetailsPresenter {
     private MealDetailsView view;
-    private MealsRemoteDataSourceImpl dataSource;;
+    private MealsRemoteDataSourceImpl dataSource;
+    private MealsLocalDataSourceImpl localDataSource;
 
-    public MealDetailsPresenter(MealDetailsView view, MealsRemoteDataSourceImpl dataSource) {
+    public MealDetailsPresenter(MealDetailsView view, MealsRemoteDataSourceImpl dataSource,MealsLocalDataSourceImpl localDataSource) {
         this.view = view;
         this.dataSource = dataSource;
+        this.localDataSource = localDataSource;
     }
     public void getMealDetails(int mealId) {
 
@@ -25,6 +28,8 @@ public class MealDetailsPresenter {
             @Override
             public void onSuccess(Meal meal) {
                 view.showMealDetails(meal);
+
+
             }
 
             @Override
@@ -38,8 +43,8 @@ public class MealDetailsPresenter {
             }
 
             @Override
-            public void onIngredientsSuccess( List<Map<String,String>> ingredients) {
-              view.showIngredients(ingredients);
+            public void onIngredientsSuccess(List<Map<String, String>> ingredients) {
+                view.showIngredients(ingredients);
             }
 
             @Override
@@ -48,6 +53,24 @@ public class MealDetailsPresenter {
             }
         });
     }
+    public void addMealToFavorites(Meal meal) {
+        if (localDataSource != null) {
+            localDataSource.insertMeal(meal);
+        } else {
+            view.showErrorMessage("Error: Unable to add meal to favorites.");
+        }
+    }
 
-}
+    // Remove the meal from the favorites in the local database
+    public void removeMealFromFavorites(Meal meal) {
+        if (localDataSource != null) {
+            localDataSource.deleteMeal(meal);
+        } else {
+            view.showErrorMessage("Error: Unable to remove meal from favorites.");
+        }
+        }
+
+    }
+
+
 

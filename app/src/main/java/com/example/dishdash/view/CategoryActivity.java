@@ -30,7 +30,7 @@ public class CategoryActivity extends AppCompatActivity implements CategoryMeals
 
     public FilterMealsPresenter presenter;
     CategoryMealsView view;
-    private TextView mealDescription;
+    private TextView Description;
     private TextView greeting;
 
     CardView cardView;
@@ -45,17 +45,20 @@ public class CategoryActivity extends AppCompatActivity implements CategoryMeals
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2); // 2 columns
         MealsAdapter = new MealsAdapter(this, meals, true);
         Rec.setAdapter(MealsAdapter); // Set adapter initially
-
+Description = findViewById(R.id.Country);
         String categoryName = null;
         String countryName = null;
         Intent intent = getIntent();
         if (intent.hasExtra("categoryName")) {
             categoryName = intent.getStringExtra("categoryName");
+            Description.setText(categoryName);
             Log.i(NAMEFROMDASHBORADACTIVITY, "onCreate: " + categoryName);
         } else if (intent.hasExtra("countryName")) {
             countryName = intent.getStringExtra("countryName");
+            Description.setText(countryName);
             Log.i(NAMEFROMDASHBORADACTIVITY, "onCreate: " + countryName);
         }
+
 
         greeting = findViewById(R.id.user_greeting);
         progress = findViewById(R.id.lottieProgress);

@@ -101,11 +101,13 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.ViewHolder> 
         public View layout;
         public ImageView categoryI_Img;
 
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
                 layout = itemView;
                 MealName = itemView.findViewById(R.id.category_name);
                 categoryI_Img = itemView.findViewById(R.id.categoryI_Img);
+                itemView.findViewById(R.id.heart_icon);
 
             }
 
