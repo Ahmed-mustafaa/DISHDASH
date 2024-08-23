@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card"
+    android:layout_width="match_parent"
+    android:layout_height="350dp"
+    android:layout_margin="8dp"
+    app:cardUseCompatPadding="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/row"
+        android:layout_width="395dp"
+        android:layout_height="339dp">
+
+        <ImageView
+            android:id="@+id/productImage"
+            android:layout_width="372dp"
+            android:layout_height="136dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:adjustViewBounds="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+        <TextView
+            android:id="@+id/Name"
+            android:layout_width="189dp"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="12dp"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/productImage"
+            tools:text="Meal Name" />
+
+        <TextView
+            android:id="@+id/Country"
+            android:layout_width="262dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="88dp"
+            android:breakStrategy="high_quality"
+            android:maxLines="4"
+            android:scrollHorizontally="false"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Category"
+            tools:text="Country" />
+
+        <TextView
+            android:id="@+id/Category"
+            android:layout_width="262dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="88dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Name"
+            tools:text="Category" />
+
+        <Button
+            android:id="@+id/Add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="30dp"
+            android:text="add to favorites"
+            android:textColorLink="#6FFFFFFF"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Country" />
+
+        <Button
+            android:id="@+id/deleteButton"
+            android:layout_width="117dp"
+            android:layout_height="47dp"
+            android:layout_marginStart="220dp"
+            android:layout_marginTop="31dp"
+            android:backgroundTint="#CDAA1A1A"
+            android:text="Remove"
+            android:textColor="#FFFFFF"
+            android:textColorLink="#673AB7"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Country" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>
