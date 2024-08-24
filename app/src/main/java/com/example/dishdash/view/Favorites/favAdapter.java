@@ -93,7 +93,7 @@ public class favAdapter extends RecyclerView.Adapter<favAdapter.ViewHolder> {
             Category = convertView.findViewById(R.id.Category);
             thumb = convertView.findViewById(R.id.productImage);
             DeleteFromFav = convertView.findViewById(R.id.deleteButton);
-            Add = convertView.findViewById(R.id.Add);
+            //  Add = convertView.findViewById(R.id.Add);
             card = convertView.findViewById(R.id.card);
 
         }

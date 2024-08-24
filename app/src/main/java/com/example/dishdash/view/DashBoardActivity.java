@@ -73,7 +73,8 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
     private NetworkListener networkListener;
 
     String userId;
-    private LottieAnimationView fabFavorites; // Add a FloatingActionButton for Favorites
+    private LottieAnimationView fabFavorites;
+    private LottieAnimationView create;
     private boolean isFabOpen = false;
     private boolean isGuest;
     private LottieAnimationView SearchIcon;
@@ -105,7 +106,7 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
         });
 
         fabLogout = findViewById(R.id.fab_log_out);
-
+        create=findViewById(R.id.home_icon);
         fabFavorites = findViewById(R.id.heart_icon); // Initialize the Favorites button
         Animation scaleUp = AnimationUtils.loadAnimation(this, R.anim.scaleup);
         LinearLayout FloatingActionButtons = findViewById(R.id.Linear);
@@ -180,6 +181,13 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
 
             finish();
         });
+        create.setOnClickListener(v -> {
+            AppData.getInstance().initialize(this);
+            String userId = AppData.getInstance().getUserId();
+            Intent planintent = new Intent(DashBoardActivity.this, CreatePlanActivity.class);
+            startActivity(planintent);
+                });
+
 
 
 

@@ -15,10 +15,10 @@
 
         <ImageView
             android:id="@+id/productImage"
-            android:layout_width="372dp"
-            android:layout_height="136dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="10dp"
+            android:layout_width="302dp"
+            android:layout_height="160dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
             android:adjustViewBounds="true"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -26,12 +26,13 @@
 
         <TextView
             android:id="@+id/Name"
-            android:layout_width="189dp"
-            android:layout_height="wrap_content"
+            android:layout_width="267dp"
+            android:layout_height="51dp"
 
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="8dp"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.388"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/productImage"
             tools:text="Meal Name" />
@@ -40,8 +41,9 @@
             android:id="@+id/Country"
             android:layout_width="262dp"
             android:layout_height="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="88dp"
+            android:background="#8D673AB7"
             android:breakStrategy="high_quality"
             android:maxLines="4"
             android:scrollHorizontally="false"
@@ -56,28 +58,18 @@
             android:layout_height="20dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="88dp"
+            android:background="#65974040"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/Name"
             tools:text="Category" />
 
         <Button
-            android:id="@+id/Add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="30dp"
-            android:text="add to favorites"
-            android:textColorLink="#6FFFFFFF"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/Country" />
-
-        <Button
             android:id="@+id/deleteButton"
             android:layout_width="117dp"
             android:layout_height="47dp"
-            android:layout_marginStart="220dp"
-            android:layout_marginTop="31dp"
+            android:layout_marginStart="112dp"
+            android:layout_marginTop="12dp"
             android:backgroundTint="#CDAA1A1A"
             android:text="Remove"
             android:textColor="#FFFFFF"

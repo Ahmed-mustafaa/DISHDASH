@@ -65,8 +65,12 @@
                 app:layout_constraintTop_toBottomOf="@id/breakfastTitle"
                 android:layout_marginStart="16dp"/>
 
-            <ImageButton
-                android:id="@+id/addBreakFasttoplan"
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/add1"
+                android:layout_weight="1"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="false"
+                app:lottie_rawRes="@raw/plus"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginEnd="16dp"
@@ -112,8 +116,12 @@
                 app:layout_constraintTop_toBottomOf="@id/lunchTitle"
                 android:layout_marginStart="16dp"/>
 
-            <ImageButton
-                android:id="@+id/addLunchtoplan"
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/add2"
+                android:layout_weight="1"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="false"
+                app:lottie_rawRes="@raw/plus"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginEnd="16dp"
@@ -159,8 +167,12 @@
                 app:layout_constraintTop_toBottomOf="@id/dinnerTitle"
                 android:layout_marginStart="16dp"/>
 
-            <ImageButton
-                android:id="@+id/addDinnertoplan"
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/add3"
+                android:layout_weight="1"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="false"
+                app:lottie_rawRes="@raw/plus"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginEnd="16dp"
