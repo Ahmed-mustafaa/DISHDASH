@@ -8,7 +8,7 @@ import com.example.dishdash.model.Meal;
 import java.util.List;
 
 public interface MealsRepository {
-    void insertMeal(Meal meal);
+    void insertMeal(Meal meal,String userId);
 
     void deleteMeal(Meal meal);
     LiveData<List<Meal>> getAllMeals();

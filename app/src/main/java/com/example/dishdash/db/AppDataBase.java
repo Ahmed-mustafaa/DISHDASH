@@ -15,10 +15,10 @@ import com.example.dishdash.model.Meal;
 
 @Database(entities = {Meal.class, Ingredient.class}, version = 2, exportSchema = false)
 public abstract class AppDataBase extends RoomDatabase {
-    static volatile  AppDataBase instance = null;
+   private static volatile  AppDataBase instance = null;
     public abstract MealDAO getProductDAO();
     public abstract IngredientDAO IngrdientDAO();
-    public abstract FavDAO favoriteDao();
+
 
 
     public static synchronized AppDataBase getInstance(Context context){
@@ -28,6 +28,8 @@ public abstract class AppDataBase extends RoomDatabase {
         }
         return instance;
     }
+    public abstract FavDAO getFavDAO();
+
     static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
@@ -35,4 +37,5 @@ public abstract class AppDataBase extends RoomDatabase {
             database.execSQL("ALTER TABLE meals ADD COLUMN userId TEXT");
         }
     };
+
 }

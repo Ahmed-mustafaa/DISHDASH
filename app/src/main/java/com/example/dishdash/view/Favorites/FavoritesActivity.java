@@ -35,8 +35,6 @@ public class FavoritesActivity extends AppCompatActivity implements onRClickList
     LinearLayoutManager layoutManager;
     FavPresenter presenter;
     public List<Meal> Favproducts;
-    String userID;
-    MealDAO dao;
 
     RecyclerView FavRecyclerView;
 
@@ -46,8 +44,7 @@ public class FavoritesActivity extends AppCompatActivity implements onRClickList
 
         setContentView(R.layout.activity_fav);
 
-        userID = getIntent().getStringExtra("user_id");
-
+        AppData.getInstance().initialize(this);
         FavRecyclerView = findViewById(R.id.Favres);
         FavRecyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
@@ -56,28 +53,45 @@ public class FavoritesActivity extends AppCompatActivity implements onRClickList
         Favproducts = new ArrayList<>();
         favadapter = new favAdapter( this,this);
         FavRecyclerView.setAdapter(favadapter);
+        mealsLocalDataSource = MealsLocalDataSourceImpl.getInstance(this);
+
         presenter =  new FavoritesPresenter( this, MealsRepositoryImpl.getInstance(MealsRemoteDataSourceImpl.getInstance(),
                 MealsLocalDataSourceImpl.getInstance(this)));
-        if (userID != null) {
-            presenter.getFavoriteMeals(userID);
-        } else {
-            showEmptyFavoritesMessage();
+        AppDataBase db = AppDataBase.getInstance(this);
+        if (db == null) {
+            Log.e(TAG, "onCreate: Database is null");
+            return;
+        }
+        FavDAO dao = db.getFavDAO();
+
+        if (dao == null) {
+            Log.e(TAG, "onCreate: DAO instance is null");
         }
 
-        AppDataBase db = AppDataBase.getInstance(this);
-        dao = db.getProductDAO();
-        dao.getFavoriteMeals();
-        Observer<List<Meal>> observer = new Observer<List<Meal>>() {
-            @Override
-            public void onChanged(List<Meal> Favproducts) {
-                favadapter.setList(Favproducts);
-                Log.i(TAG, "onChanged: " + Favproducts.size() + "Items in DB`");
+        String userID = AppData.getInstance().getUserId();
+        Log.i(TAG, "userId : "+userID);
+        if (userID == null || userID.isEmpty()) {
+            Log.e(TAG, "UserID is null or empty");
 
+            showEmptyFavoritesMessage(); // Show a message if no user ID is available
+            return; // Stay on the screen without making a database call
+        }
+
+        LiveData<List<Meal>> observable = dao.getFavoritesByUserId(userID);
+        if (observable == null) {
+            Log.e(TAG, "onCreate: Observable is null");
+            return;
+        }
+
+        observable.observe(this, favMeals -> {
+            if (favMeals == null || favMeals.isEmpty()) {
+                showEmptyFavoritesMessage();
+            } else {
+                favadapter.setList(favMeals);
+                favadapter.notifyDataSetChanged();
+                Log.i(TAG, "onChanged: " + favMeals.size() + " items in DB");
             }
-        };
-        LiveData<List<Meal>> observable = dao.getFavoriteMeals();
-        observable.observe(this, observer);
-
+        });
     }
 
 
@@ -97,16 +111,16 @@ public class FavoritesActivity extends AppCompatActivity implements onRClickList
 
     @Override
     public void displayFavoriteMeals(List<Meal> meals) {
-        if (meals != null) {
+        if (meals != null && !meals.isEmpty()) {
             favadapter.setList(meals);
-        }else {
+        } else {
             showEmptyFavoritesMessage();
         }
     }
 
     @Override
     public void showEmptyFavoritesMessage() {
-        Toast.makeText(this, "No favorite products", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "No favorite Meals", Toast.LENGTH_SHORT).show();
     }
 
     @Override

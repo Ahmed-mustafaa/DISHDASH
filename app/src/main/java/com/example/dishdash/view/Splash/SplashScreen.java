@@ -1,4 +1,4 @@
-package com.example.dishdash.view;
+package com.example.dishdash.view.Splash;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,8 +15,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.dishdash.R;
+import com.example.dishdash.view.LoginActivity;
 
-public class SplashScreen extends AppCompatActivity {
+public class SplashScreen extends AppCompatActivity implements SplashScreenView {
 LottieAnimationView lottie;
     TextView dishDashText ;
     TextView mealMateText;
@@ -67,11 +68,7 @@ LottieAnimationView lottie;
             }, delay * i);
         }
         new Handler().postDelayed(() -> {
-            // Animate the appearance of the vector image
-            greenGrass.setVisibility(View.VISIBLE);
-            Animation fadeIn = new AlphaAnimation(0, 1);
-            fadeIn.setDuration(1000); // Duration of the fade-in animation
-            greenGrass.startAnimation(fadeIn);
+
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {

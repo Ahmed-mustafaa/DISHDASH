@@ -2,6 +2,7 @@ package com.example.dishdash.model;
 
 
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -14,11 +15,24 @@ import java.util.Map;
 @Entity(tableName = "meals")
 
 public class Meal{
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @NonNull
+    public int id;
+
     @SerializedName("idMeal")
     public String idMeal;
+    @ColumnInfo(name = "userId")
+
     public String userId;
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     @SerializedName("strMeal")
     public String strMeal;
     private boolean isFavorite;

@@ -5,6 +5,7 @@ package com.example.dishdash.db;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 import androidx.room.Delete;
@@ -20,7 +21,7 @@ public interface FavDAO {
     @Query("SELECT * FROM meals WHERE isFavorite = 1 AND userId = :userId")
     LiveData<List<Meal>> getFavoritesByUserId(String userId);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertMeal(Meal meal);
 
     @Update

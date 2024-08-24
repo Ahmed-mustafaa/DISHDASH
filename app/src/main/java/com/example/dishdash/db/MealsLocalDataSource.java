@@ -12,6 +12,7 @@ public interface MealsLocalDataSource {
       void deleteMeal(Meal meal);
        LiveData<List<Meal>>getSortedMeals();
        MealDAO mealDAO();
+    FavDAO favDAO();
     void updateMeal(Meal meal);
      LiveData<List<Meal>> getFavoritesByUserId(String userId) ;
 

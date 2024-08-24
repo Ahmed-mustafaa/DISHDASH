@@ -80,6 +80,9 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
             ingredeintientsRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
             // Default to -1 if not found
         }
+        AppData.getInstance().initialize(this);
+        String userID = AppData.getInstance().getUserId();
+        Log.i(MEALDETAILSACTIVITY, "USER ID IS : " + userID);
 
         if (mealId != -1) {
             presenter.getMealDetails(mealId);
@@ -111,7 +114,8 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
         }
     }
     private void addToFavorites(Meal meal) {
-
+        String userId = AppData.getInstance().getUserId(); // Get the user ID
+        meal.setUserId(userId);
         meal.setFavorite(true); // Assuming Meal model has a favorite flag
         presenter.addMealToFavorites(meal); // Save the meal as favorite using the presenter or local database
         Toast.makeText(this, meal.getStrMeal() + " added to favorites", Toast.LENGTH_SHORT).show();

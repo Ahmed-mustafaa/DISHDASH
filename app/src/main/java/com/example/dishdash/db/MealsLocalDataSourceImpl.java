@@ -9,7 +9,9 @@ import com.example.dishdash.model.Meal;
 import java.util.List;
 
 public class MealsLocalDataSourceImpl implements MealsLocalDataSource {
+    private FavDAO favDAO;
     private MealDAO mealDAO;
+
     private LiveData<List<Meal>> storedProducts;
     public MealsLocalDataSourceImpl(Context context){
         if(context == null) {
@@ -17,9 +19,10 @@ public class MealsLocalDataSourceImpl implements MealsLocalDataSource {
         }
             AppDataBase db = AppDataBase.getInstance(context.getApplicationContext());
         mealDAO = db.getProductDAO();
+        favDAO = db.getFavDAO();
 
 
-        storedProducts = mealDAO.getAllProducts();
+        //storedProducts = mealDAO.getAllProducts();
 
 
     }
@@ -36,13 +39,13 @@ public class MealsLocalDataSourceImpl implements MealsLocalDataSource {
     @Override
     public void insertMeal(Meal meal) {
         new Thread(()->
-                mealDAO.insertMeal(meal)).start();
+                favDAO.insertMeal(meal)).start();
     }
 
     @Override
     public void deleteMeal(Meal meal) {
         new Thread(()->
-                mealDAO.deleteMeal(meal)).start();
+                favDAO.deleteMeal(meal)).start();
     }
 
     @Override
@@ -56,11 +59,16 @@ public class MealsLocalDataSourceImpl implements MealsLocalDataSource {
     }
 
     @Override
+    public FavDAO favDAO() {
+        return null;
+    }
+
+    @Override
     public void updateMeal(Meal meal) {
 
     }
 
     public LiveData<List<Meal>> getFavoritesByUserId(String userId) {
-        return mealDAO.getFavoritesByUserId(userId);
+        return favDAO.getFavoritesByUserId(userId);
     }
 }

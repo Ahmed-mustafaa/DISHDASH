@@ -12,8 +12,8 @@ import com.example.dishdash.model.Meal;
                 childColumns = "mealId",
                 onDelete = ForeignKey.CASCADE))
 public class Favorite {
-    @PrimaryKey(autoGenerate = true)
     public int id;
+    @PrimaryKey(autoGenerate = true)
     public int userId; // Link to user
     public String mealId; // Link to meal
 }

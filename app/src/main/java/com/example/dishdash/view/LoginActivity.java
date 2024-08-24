@@ -41,6 +41,7 @@
 
         private GoogleSignInClient mGoogleSignInClient;
         private FirebaseAuth mAuth;
+        private static final String TAG = "LoginActivity";
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -101,10 +102,13 @@
                             FirebaseUser user = mAuth.getCurrentUser();
                             if (user != null) {
                                 String userId = user.getUid();
+                                AppData.getInstance().setUserId(userId);
+                                AppData.getInstance().setGuest(false);
                                 SharedPreferences sharedPreferences = getSharedPreferences("app_prefs", MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
                                 editor.putString("user_id", userId);
                                 editor.apply();
+                                Log.i(TAG, "signInWithEmailPassword: " + userId);
                                 Intent intent = new Intent(LoginActivity.this, DashBoardActivity.class);
                                 startActivity(intent);
                                 finish();
@@ -149,22 +153,21 @@
                             FirebaseUser user = mAuth.getCurrentUser();
                             if (user != null) {
                                 String userId = user.getUid();
+                                AppData.getInstance().setUserId(userId);
+                                AppData.getInstance().setGuest(false);
                                 SharedPreferences sharedPreferences = getSharedPreferences("app_prefs", MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
                                 editor.putString("user_id", userId);
                                 editor.apply();
+                                Log.i(TAG, "firebaseAuthWithGoogle: "+userId );
                                 Toast.makeText(this, "Authentication Successful.", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(LoginActivity.this, DashBoardActivity.class);
                                 startActivity(intent);
                                 finish();
                             }
                             Toast.makeText(this, "Authentication Successful.", Toast.LENGTH_SHORT).show();
-                            // Redirect to MainActivity or another activity
-                           /* Intent intent = new Intent(LoginActivity.this, DashBoardActivity.class);
-                            startActivity(intent);
-                            finish();*/
+
                         } else {
-                            // If sign in fails, display a message to the user.
                             Toast.makeText(this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
                         }
                     });

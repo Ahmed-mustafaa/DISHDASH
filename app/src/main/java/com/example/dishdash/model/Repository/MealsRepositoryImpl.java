@@ -2,6 +2,7 @@ package com.example.dishdash.model.Repository;
 
 import androidx.lifecycle.LiveData;
 
+import com.example.dishdash.db.FavDAO;
 import com.example.dishdash.db.MealDAO;
 import com.example.dishdash.db.MealsLocalDataSource;
 import com.example.dishdash.NetworkCall.NetworkCallBack;
@@ -14,13 +15,13 @@ public class MealsRepositoryImpl implements MealsRepository {
 
     MealsRemoteDataSourceImpl remote;
     MealsLocalDataSource local;
-    MealDAO mealDao; // Reference to ProductDAO
+    FavDAO FavDao; // Reference to ProductDAO
 
     private  static MealsRepositoryImpl repo=null;
     private MealsRepositoryImpl(MealsRemoteDataSourceImpl remote , MealsLocalDataSource local){
    this.remote=remote;
    this.local=local;
-   this.mealDao=local.mealDAO();
+   this.FavDao=local.favDAO();
     }
 
     public static MealsRepositoryImpl getInstance(MealsRemoteDataSourceImpl remote , MealsLocalDataSource local){
@@ -31,7 +32,7 @@ public class MealsRepositoryImpl implements MealsRepository {
     }
 
     @Override
-    public void insertMeal(Meal meal) {
+    public void insertMeal(Meal meal,String userId) {
         meal.setFavorite(true);
         local.insertMeal(meal);
     }
@@ -53,7 +54,7 @@ public class MealsRepositoryImpl implements MealsRepository {
 
     @Override
     public LiveData<List<Meal>> getFavMeals(String userId,NetworkCallBack networkCallBacks) {
-        return mealDao.getFavoriteMeals();
+        return FavDao.getFavoritesByUserId(userId);
     }
 
     @Override

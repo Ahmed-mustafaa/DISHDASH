@@ -16,6 +16,19 @@ public class AppData {
     private boolean isGuest;
     private Context context; // Add a context field
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    private String userId; // Store user ID
+
+    public static void setInstance(AppData instance) {
+        AppData.instance = instance;
+    }
 
     private AppData() {}
 

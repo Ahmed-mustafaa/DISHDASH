@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.dishdash.NetworkCall.MealsRemoteDataSourceImpl;
 import com.example.dishdash.R;
+import com.example.dishdash.db.AppData;
 import com.example.dishdash.model.Meal;
 import com.example.dishdash.presenter.FilterMealsPresenter;
 
@@ -58,8 +59,9 @@ Description = findViewById(R.id.Country);
             Description.setText(countryName);
             Log.i(NAMEFROMDASHBORADACTIVITY, "onCreate: " + countryName);
         }
-
-
+        AppData.getInstance().initialize(this);
+        String userID = AppData.getInstance().getUserId();
+        Log.i(NAMEFROMDASHBORADACTIVITY, "USerID from Category activity: " + userID);
         greeting = findViewById(R.id.user_greeting);
         progress = findViewById(R.id.lottieProgress);
         cardView = findViewById(R.id.user_greeting_card);
@@ -87,19 +89,6 @@ Description = findViewById(R.id.Country);
         showLoading();
     }
 
-       /* else if (countryName != null) {
-            presenter.fetchMealsByCountry(countryName, new CategoryCallBack() {
-                @Override
-                public void onSuccess(List<Meal> meals) {
-                    // Handle meals for country
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mealsAdapter.setMeals(meals, true); // Assuming true indicates country meals
-                            mealsRecyclerView.setAdapter(mealsAdapter);
-                        }
-                    });
-                }*/
 
 
         @Override
