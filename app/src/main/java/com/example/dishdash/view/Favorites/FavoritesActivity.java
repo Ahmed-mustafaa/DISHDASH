@@ -5,7 +5,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,8 +22,7 @@ import com.example.dishdash.model.Meal;
 import com.example.dishdash.db.AppDataBase;
 
 import com.example.dishdash.model.Repository.MealsRepositoryImpl;
-import com.example.dishdash.view.*;
-
+import com.example.dishdash.presenter.FavoritesPresenter;
 
 
 public class FavoritesActivity extends AppCompatActivity implements onRClickListener,FavoritesView{
@@ -44,7 +42,8 @@ public class FavoritesActivity extends AppCompatActivity implements onRClickList
 
         setContentView(R.layout.activity_fav);
 
-        AppData.getInstance().initialize(this);
+        String userID = AppData.getInstance().getUserId();
+
         FavRecyclerView = findViewById(R.id.Favres);
         FavRecyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
@@ -55,7 +54,7 @@ public class FavoritesActivity extends AppCompatActivity implements onRClickList
         FavRecyclerView.setAdapter(favadapter);
         mealsLocalDataSource = MealsLocalDataSourceImpl.getInstance(this);
 
-        presenter =  new FavoritesPresenter( this, MealsRepositoryImpl.getInstance(MealsRemoteDataSourceImpl.getInstance(),
+        presenter =  new FavoritesPresenter( this, MealsRepositoryImpl.getInstance(MealsRemoteDataSourceImpl.getInstance(getApplicationContext()),
                 MealsLocalDataSourceImpl.getInstance(this)));
         AppDataBase db = AppDataBase.getInstance(this);
         if (db == null) {
@@ -68,8 +67,7 @@ public class FavoritesActivity extends AppCompatActivity implements onRClickList
             Log.e(TAG, "onCreate: DAO instance is null");
         }
 
-        String userID = AppData.getInstance().getUserId();
-        Log.i(TAG, "userId : "+userID);
+            Log.i(TAG, "userId : " + userID);
         if (userID == null || userID.isEmpty()) {
             Log.e(TAG, "UserID is null or empty");
 

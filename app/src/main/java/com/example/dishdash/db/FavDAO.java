@@ -45,4 +45,5 @@ public interface FavDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertMeals(List<Meal> meals);
+
 }

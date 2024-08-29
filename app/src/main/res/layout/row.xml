@@ -26,8 +26,8 @@
 
         <TextView
             android:id="@+id/Name"
-            android:layout_width="267dp"
-            android:layout_height="51dp"
+            android:layout_width="359dp"
+            android:layout_height="35dp"
 
             android:layout_marginTop="8dp"
             android:textSize="16sp"
@@ -39,43 +39,55 @@
 
         <TextView
             android:id="@+id/Country"
-            android:layout_width="262dp"
-            android:layout_height="20dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="88dp"
-            android:background="#8D673AB7"
+            android:layout_width="171dp"
+            android:layout_height="41dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="208dp"
+            android:background="#12673AB7"
             android:breakStrategy="high_quality"
             android:maxLines="4"
             android:scrollHorizontally="false"
-            android:textSize="14sp"
+            android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/Category"
             tools:text="Country" />
 
         <TextView
             android:id="@+id/Category"
-            android:layout_width="262dp"
-            android:layout_height="20dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="88dp"
-            android:background="#65974040"
-            android:textSize="14sp"
+            android:layout_width="176dp"
+            android:layout_height="37dp"
+            android:layout_marginEnd="204dp"
+            android:background="#12673AB7"
+            android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/Name"
             tools:text="Category" />
 
         <Button
-            android:id="@+id/deleteButton"
+            android:id="@+id/Add"
             android:layout_width="117dp"
             android:layout_height="47dp"
-            android:layout_marginStart="112dp"
+            android:layout_marginStart="48dp"
             android:layout_marginTop="12dp"
+            android:backgroundTint="#CDAA1A1A"
+            android:text="Add"
+            android:textColor="#FFFFFF"
+            android:visibility="gone"
+            android:textColorLink="#673AB7"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Country" />
+
+        <Button
+            android:id="@+id/RemoveButton"
+            android:layout_width="117dp"
+            android:layout_height="47dp"
+            android:layout_marginStart="260dp"
             android:backgroundTint="#CDAA1A1A"
             android:text="Remove"
             android:textColor="#FFFFFF"
             android:textColorLink="#673AB7"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/Country" />
+            tools:layout_editor_absoluteY="257dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

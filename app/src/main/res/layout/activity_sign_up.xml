@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/primary"
-    tools:context=".view.SignUP.SignUpActivity">
+    tools:context=".view.SignUP_LogIn.SignUpActivity">
 
     <!-- CardView containing the form -->
     <androidx.cardview.widget.CardView
@@ -121,6 +121,7 @@
                 android:id="@+id/google_signup_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
                 android:background="?attr/selectableItemBackground"
                 android:clickable="true"
                 android:elevation="4dp"
@@ -129,7 +130,7 @@
                 android:padding="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                tools:layout_editor_absoluteY="315dp">
+                app:layout_constraintTop_toBottomOf="@+id/signup_button">
 
                 <TextView
                     android:id="@+id/Login_link"
@@ -145,6 +146,7 @@
             </LinearLayout>
 
             <ImageView
+                android:id="@+id/imageView"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_marginTop="2dp"

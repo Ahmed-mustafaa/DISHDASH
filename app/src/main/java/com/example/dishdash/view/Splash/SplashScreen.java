@@ -3,34 +3,40 @@ package com.example.dishdash.view.Splash;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.TranslateAnimation;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.dishdash.R;
-import com.example.dishdash.view.LoginActivity;
+import com.example.dishdash.view.DashBoard.DashBoardActivity;
+import com.example.dishdash.view.SignUP_LogIn.LoginActivity;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class SplashScreen extends AppCompatActivity implements SplashScreenView {
 LottieAnimationView lottie;
     TextView dishDashText ;
     TextView mealMateText;
-    private ImageView greenGrass;
+    private FirebaseAuth mAuth;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen2);
+        FirebaseApp.initializeApp(this);
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
         lottie = findViewById(R.id.lottieAnimationView);
         dishDashText= findViewById(R.id.dishdash_text); // assuming you have set an id in XML
         mealMateText  = findViewById(R.id.meal_mate_text);
-        greenGrass = findViewById(R.id.vectorImageView);
 
         // Create the Translate Animation
         TranslateAnimation translate = new TranslateAnimation(
@@ -72,11 +78,23 @@ LottieAnimationView lottie;
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    Intent intent = new Intent(SplashScreen.this, LoginActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
+                    if (currentUser != null) {
+                        navigateToDashboard();
+                    } else {
+                        navigateToLogin();
+                    }                }
                     },1500);
             }, fullText.length()* delay +500);
         }
+    private void navigateToDashboard() {
+        Intent intent = new Intent(SplashScreen.this, DashBoardActivity.class);
+        startActivity(intent);
+        finish(); // Close this activity to prevent the user from going back to it
+    }
+
+    private void navigateToLogin() {
+        Intent intent = new Intent(SplashScreen.this, LoginActivity.class);
+        startActivity(intent);
+        finish(); // Close this activity to prevent the user from going back to it
+    }
     }

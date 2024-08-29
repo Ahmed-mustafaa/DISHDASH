@@ -1,4 +1,4 @@
-package com.example.dishdash.view;
+package com.example.dishdash.view.DashBoard;
 
 import com.example.dishdash.model.Category;
 import com.example.dishdash.model.Country;

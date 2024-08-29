@@ -3,8 +3,12 @@ package com.example.dishdash.NetworkCall;
 import static android.media.CamcorderProfile.get;
 import static com.google.android.gms.tasks.Tasks.call;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
-import android.widget.Toast;
+
+import androidx.lifecycle.LiveData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,11 +16,14 @@ import java.util.List;
 import java.util.Map;
 
 
+import com.example.dishdash.db.AppDataBase;
+import com.example.dishdash.db.FavDAO;
+import com.example.dishdash.db.MealDAO;
 import com.example.dishdash.model.Category;
 import com.example.dishdash.model.Country;
 import com.example.dishdash.model.DisplayItem;
 import com.example.dishdash.model.Meal;
-import com.example.dishdash.view.CountriesAdapter;
+import com.example.dishdash.view.FilterationScreen.CountriesAdapter;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -37,9 +44,16 @@ public class MealsRemoteDataSourceImpl {
 
     private Call<MealResponse> randomMealCall;
 
-    private static MealsRemoteDataSourceImpl retClient = null;
+    private FavDAO favDao;
+    private MealDAO mealDAO;
 
-    public MealsRemoteDataSourceImpl() {
+    private static MealsRemoteDataSourceImpl retClient = null;
+private Context context;
+private  AppDataBase appDataBase;
+    public MealsRemoteDataSourceImpl(Context context) {
+        this.context = context;
+        this.appDataBase = appDataBase.getInstance(context);
+        this.mealDAO = appDataBase.getFavoriteMeals();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -49,65 +63,83 @@ public class MealsRemoteDataSourceImpl {
         countryService = retrofit.create(Service.class);
         categoryService = retrofit.create(MealService.class);
 
-
     }
 
-    public static synchronized MealsRemoteDataSourceImpl getInstance() {
+    public static synchronized MealsRemoteDataSourceImpl getInstance(Context context) {
         if (retClient == null) {
-            retClient = new MealsRemoteDataSourceImpl();
+            retClient = new MealsRemoteDataSourceImpl(context.getApplicationContext());
         }
         return retClient;
     }
-
-
-    public void makeNetworkCall(NetworkCallBack ntwrkCallBack) {
-        randomMealCall.enqueue(new Callback<MealResponse>() {
-            @Override
-            public void onResponse(Call<MealResponse> call, Response<MealResponse> response) {
-                if (response.isSuccessful()) {
-                    Meal meal = response.body().getMeals().get(0);
-                    String mealName = meal.getStrMeal();
-                    String mealCategory = meal.getStrCategory();
-                    String mealArea = meal.getStrArea();
-                    String mealInstructions = meal.getStrInstructions();
-                    String mealImage = meal.getStrMealThumb();
-
-
-                    Log.i(TAG, "onResponse: " + meal);
-                    ntwrkCallBack.onSuccess(meal);
-                    Log.i(TAG, "onSucess: " + meal.toString());
-                } else {
-                    Log.i(TAG, "Erorrrrr ! : " + response.code());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<MealResponse> call, Throwable t) {
-                ntwrkCallBack.onFailure(t); // Notify failure
-                //  Toast.makeText(AllProductsActivity.this,  "Error fetching products", Toast.LENGTH_SHORT).show();
-                Log.e(TAG, "Error fetching meal: " + t.getMessage());
-            }
-        });
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    public void getAllMeals() {
+    private LiveData<List<Meal>> getFavoritesByUserId(String userId) {
+        return favDao.getFavoritesByUserId(userId);
+    }
+    public void makeNetworkCall(NetworkCallBack ntwrkCallBack,String userId) {
+        if (isNetworkAvailable()) {
+            randomMealCall.enqueue(new Callback<MealResponse>() {
+                @Override
+                public void onResponse(Call<MealResponse> call, Response<MealResponse> response) {
+                    if (response.isSuccessful()) {
+                        Meal meal = response.body().getMeals().get(0);
+                        Log.i(TAG, "onResponse: " + meal);
+                        ntwrkCallBack.onSuccess(meal);
+                    } else {
+                        Log.i(TAG, "Error: " + response.code());
+                        ntwrkCallBack.onFailure(new Throwable("Error: " + response.code()));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<MealResponse> call, Throwable t) {
+                   LiveData<List<Meal>> favorites = getFavoritesByUserId(userId);
+                    if (favorites != null && favorites.getValue() != null) {
+                        ntwrkCallBack.onSuccess(favorites.getValue());
+                    } else {
+                        Log.e(TAG, "Error fetching meal: " + t.getMessage());
+                        ntwrkCallBack.onFailure(t);
+                    }
+                }
+            });
+        } else {
+            LiveData<List<Meal>> favorites = getFavoritesByUserId(userId);
+            if (favorites != null && favorites.getValue() != null) {
+                ntwrkCallBack.onSuccess(favorites.getValue());
+            }  else {
+                ntwrkCallBack.onFailure(new Throwable("No network and no favorite meals found"));
+            }
+        }
+    }
+
+
+    public void getAllMeals(NetworkCallBack networkCallBack) {
         mealServices.getMealsByCategory().enqueue(new Callback<CategoryResponse>() {
             @Override
             public void onResponse(Call<CategoryResponse> call, Response<CategoryResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<Category> categories = response.body().getCategories();
+                    List<DisplayItem> items = new ArrayList<>();
                     for (Category category : categories) {
-                        getMealsByCategory(category.getStrCategory());
+                        items.add(new DisplayItem(DisplayItem.ItemType.CATEGORY, category.getStrCategory(), category.getStrCategoryThumb()));
                     }
+                    networkCallBack.onSuccess((Meal) items);
+                } else {
+                    networkCallBack.onFailure(new Throwable("Error: " + response.code()));
                 }
             }
 
             @Override
             public void onFailure(Call<CategoryResponse> call, Throwable t) {
-
+                networkCallBack.onFailure(t);
             }
         });
     }
+
 
     private void getMealsByCategory(String category) {
         mealServices.getMealsByCategory(category).enqueue(new Callback<MealResponse>() {
@@ -274,41 +306,7 @@ public class MealsRemoteDataSourceImpl {
         });
     }
 
-    /*
-        public void getDailyMeals(DailyMealsCall callback) {
-            List<Meal> meals = new ArrayList<>();
-            int[] completedRequests = {0};
-            final int totalRequests = 3; // Total requests we are making
 
-            Callback<MealResponse> commonCallback = new Callback<MealResponse>() {
-                @Override
-                public void onResponse(Call<MealResponse> call, Response<MealResponse> response) {
-                    if (response.isSuccessful() && response.body() != null &&response.body().getMeals() != null && !response.body().getMeals().isEmpty()) {
-                        meals.add(response.body().getMeals().get(0));
-                    } else {
-                        Log.e(TAG, "Error fetching meal: " + call.request().url());
-                    }
-
-                    completedRequests[0]++;
-                    if (completedRequests[0] == totalRequests) {
-                        callback.OnSuccess(meals); // Notify success when all requests are completed
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<MealResponse> call, Throwable t) {
-                    Log.e(TAG, "Error fetching meal: " + t.getMessage());
-                    completedRequests[0]++;
-                    if (completedRequests[0] == totalRequests) {
-                        callback.OnFailure(new Throwable("Failed to fetch all meals")); // Notify success with partial results if some requests failed
-                    }
-                }
-            };
-
-            breakfastCall.enqueue(commonCallback);
-            lunchCall.enqueue(commonCallback);
-            dinnerCall.enqueue(commonCallback);
-        }*/
     public void getCountries(CountryCallBack countryCallBack) {
         countryService.getCountries().enqueue(new Callback<CountryResponse>() {
             @Override
@@ -330,7 +328,6 @@ public class MealsRemoteDataSourceImpl {
             @Override
             public void onFailure(Call<CountryResponse> call, Throwable t) {
                 new Throwable("Error fetching countries: " + t.getMessage());
-                adapter.setItems(new ArrayList<>());
             }
 
         });
@@ -353,10 +350,6 @@ public class MealsRemoteDataSourceImpl {
                     }
                     categoryCallBack.onSuccessCategory(categories);
 
-               /* for(Meal meal : meals){
-                    categories.add(new Category(meal.getStrCategory()));
-                }*/
-
                     Log.i(TAG, "onResponse: " + categories + response.code());
                 } else {
                     Log.e(TAG, "Error fetching categories: " + response.code()); // otherwise show this error message with response code
@@ -367,32 +360,30 @@ public class MealsRemoteDataSourceImpl {
             @Override
             public void onFailure(Call<CategoryResponse> call, Throwable t) {
                 new Throwable("Error fetching categories : " + t.getMessage());
-                adapter.setItems(new ArrayList<>());
+
             }
         });
     }
 
-    public void fetchMealsByCategories(String categoryname, CategoryCallBack callBack) {
-        Call<MealResponse> call = mealServices.getMealsByCategory(categoryname);
-        call.enqueue(new Callback<MealResponse>() {
+    public void fetchMealsByCategories(String categoryName, CategoryCallBack callBack) {
+        mealServices.getMealsByCategory(categoryName).enqueue(new Callback<MealResponse>() {
             @Override
             public void onResponse(Call<MealResponse> call, Response<MealResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<Meal> meals = response.body().getMeals();
                     callBack.onSuccess(meals);
                 } else {
-                    callBack.onFailure(new Throwable("Failed to fetch meals for category: " + categoryname));
+                    callBack.onFailure(new Throwable("Failed to fetch meals by category"));
                 }
             }
 
             @Override
             public void onFailure(Call<MealResponse> call, Throwable t) {
-                new Throwable("Error fetching meals for category: " + categoryname);
+                callBack.onFailure(t);
             }
-
-
         });
     }
+
 
     public void fetchMealsByCountries(String countryname, CountryCallBack callBack) {
         Call<MealResponse> call = countryService.getMealsByCountry(countryname);

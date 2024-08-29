@@ -15,7 +15,7 @@ import java.util.List;
 @Dao
 public interface MealDAO {
     @Query("SELECT * FROM meals")
-    LiveData<List<Meal>> getAllProducts();
+    LiveData<List<Meal>> getMeals();
     @Query("UPDATE meals SET isFavorite = :isFav WHERE idMeal = :mealId")
     void updateFavoriteStatus(String mealId, boolean isFav);
 

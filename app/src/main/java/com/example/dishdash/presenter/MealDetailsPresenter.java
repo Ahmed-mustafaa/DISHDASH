@@ -1,12 +1,14 @@
 package com.example.dishdash.presenter;
 
+import android.view.View;
+
 import com.example.dishdash.NetworkCall.MealsRemoteDataSourceImpl;
 import com.example.dishdash.NetworkCall.NetworkCallBack;
 import com.example.dishdash.db.MealsLocalDataSourceImpl;
 import com.example.dishdash.model.Category;
-import com.example.dishdash.model.Ingredient;
 import com.example.dishdash.model.Meal;
-import com.example.dishdash.view.MealDetailsView;
+import com.example.dishdash.model.Repository.MealsRepositoryImpl;
+import com.example.dishdash.view.MealDetails.MealDetailsView;
 
 import java.util.List;
 import java.util.Map;
@@ -16,11 +18,16 @@ public class MealDetailsPresenter {
     private MealDetailsView view;
     private MealsRemoteDataSourceImpl dataSource;
     private MealsLocalDataSourceImpl localDataSource;
+    private  MealsRepositoryImpl repository;
 
-    public MealDetailsPresenter(MealDetailsView view, MealsRemoteDataSourceImpl dataSource,MealsLocalDataSourceImpl localDataSource) {
+    public MealDetailsPresenter(MealDetailsView view, MealsRemoteDataSourceImpl dataSource, MealsLocalDataSourceImpl localDataSource) {
         this.view = view;
         this.dataSource = dataSource;
         this.localDataSource = localDataSource;
+
+
+        this.repository = MealsRepositoryImpl.getInstance(dataSource, localDataSource);
+
     }
     public void getMealDetails(int mealId) {
 
@@ -28,8 +35,6 @@ public class MealDetailsPresenter {
             @Override
             public void onSuccess(Meal meal) {
                 view.showMealDetails(meal);
-
-
             }
 
             @Override

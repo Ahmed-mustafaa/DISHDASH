@@ -10,7 +10,7 @@ import com.example.dishdash.NetworkCall.NetworkCallBack;
 import com.example.dishdash.model.Category;
 import com.example.dishdash.model.Country;
 import com.example.dishdash.model.Meal;
-import com.example.dishdash.view.MealsView;
+import com.example.dishdash.view.DashBoard.MealsView;
 
 import java.util.List;
 import java.util.Map;

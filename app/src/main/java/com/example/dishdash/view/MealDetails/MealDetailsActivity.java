@@ -1,6 +1,5 @@
-package com.example.dishdash.view;
+package com.example.dishdash.view.MealDetails;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,14 +17,15 @@ import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.Target;
 import com.example.dishdash.NetworkCall.MealsRemoteDataSourceImpl;
 import com.example.dishdash.R;
 import com.example.dishdash.db.AppData;
 import com.example.dishdash.db.MealsLocalDataSourceImpl;
 import com.example.dishdash.model.Meal;
+import com.example.dishdash.model.Repository.MealsRepositoryImpl;
 import com.example.dishdash.presenter.MealDetailsPresenter;
-import com.example.dishdash.view.MealDetailsView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +35,8 @@ import java.util.Map;
 public class MealDetailsActivity extends AppCompatActivity implements MealDetailsView {
 
     MealDetailsPresenter presenter;
-    MealsRemoteDataSourceImpl remoteDAtasSource= new MealsRemoteDataSourceImpl();
-    MealsLocalDataSourceImpl localDataSource;
 
+    MealsRepositoryImpl repository;
     private String mealName;
     private int mealId;
     TextView tv_meal_title;
@@ -59,10 +58,12 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.meal_details);
-         localDataSource = new MealsLocalDataSourceImpl(this.getApplicationContext());
+        MealsLocalDataSourceImpl  localDataSource =  MealsLocalDataSourceImpl.getInstance(this);
+        MealsRemoteDataSourceImpl remoteDataSource =  new MealsRemoteDataSourceImpl(getApplicationContext());
+         repository = MealsRepositoryImpl.getInstance(remoteDataSource, localDataSource);
 
+        presenter = new MealDetailsPresenter(this, remoteDataSource, localDataSource);
 
-        presenter = new MealDetailsPresenter(this,  remoteDAtasSource, localDataSource);
          isGuest = AppData.getInstance().isGuest();
 
         meal_image = findViewById(R.id.meal_image);
@@ -80,9 +81,16 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
             ingredeintientsRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
             // Default to -1 if not found
         }
-        AppData.getInstance().initialize(this);
-        String userID = AppData.getInstance().getUserId();
-        Log.i(MEALDETAILSACTIVITY, "USER ID IS : " + userID);
+
+
+
+        String userId = getIntent().getStringExtra("userId");
+        if (userId != null) {
+            AppData.getInstance().setUserId(userId);
+            Log.i(MEALDETAILSACTIVITY, "USER ID IS : " + userId);
+        } else {
+            Log.w(MEALDETAILSACTIVITY, "User ID not found in Intent");
+        }
 
         if (mealId != -1) {
             presenter.getMealDetails(mealId);
@@ -91,14 +99,15 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
             Toast.makeText(this, "Meal ID not found", Toast.LENGTH_SHORT).show();
         }
 
+
         Heart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AppData.getInstance().initialize(MealDetailsActivity.this);
-                if (AppData.getInstance().isGuest()) {
-                    AppData.getInstance().showLoginPrompt();
+                if (meal != null) {
+                    toggleFavoriteMeal();
+                } else {
+                    Toast.makeText(MealDetailsActivity.this, "Meal not loaded yet", Toast.LENGTH_SHORT).show();
                 }
-                toggleFavoriteMeal();
             }
         });
     }
@@ -115,6 +124,10 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
     }
     private void addToFavorites(Meal meal) {
         String userId = AppData.getInstance().getUserId(); // Get the user ID
+        if (userId == null) {
+            AppData.getInstance().showLoginPrompt();
+            return;
+        }
         meal.setUserId(userId);
         meal.setFavorite(true); // Assuming Meal model has a favorite flag
         presenter.addMealToFavorites(meal); // Save the meal as favorite using the presenter or local database
@@ -133,7 +146,8 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
     public void showMealDetails(Meal meal) {
         this.meal = meal;
         Log.i(MEALDETAILSACTIVITY, "showMealDetails: "+ meal.getStrMealThumb());
-        Glide.with(this).load(meal.getStrMealThumb()).override(Target.SIZE_ORIGINAL).into(meal_image);
+        Glide.with(this).load(meal.getStrMealThumb()).diskCacheStrategy(DiskCacheStrategy.ALL).override(Target.SIZE_ORIGINAL).into(meal_image);
+
         Log.i(MEALDETAILSACTIVITY, "showMealDetails - GLID IS : " + meal.getStrMealThumb() );
         tv_meal_title.setText(meal.getStrMeal());
         Log.i(MEALDETAILSACTIVITY, "showMealDetails - TILTE IS : " + meal.getStrMeal() );

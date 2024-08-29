@@ -1,4 +1,4 @@
-package com.example.dishdash.view;
+package com.example.dishdash.view.FilterationScreen;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,16 +10,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.dishdash.R;
-import com.example.dishdash.model.Category;
-import com.example.dishdash.model.Country;
+import com.example.dishdash.db.AppData;
 import com.example.dishdash.model.DisplayItem;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CountriesAdapter extends RecyclerView.Adapter<CountriesAdapter.ViewHolder> {
@@ -112,16 +109,17 @@ public CountriesAdapter(Context mContext, List<DisplayItem> items) {
                     if (position != RecyclerView.NO_POSITION && items != null && position < items.size()) {
                         DisplayItem item = items.get(position);
                         if (item != null) {
+                            Intent intent = new Intent(view.getContext(), FilterationActivity.class);
+                            String userId = AppData.getInstance().getUserId();
+                            intent.putExtra("userId", userId);
                             if (item.type == DisplayItem.ItemType.CATEGORY) {
                                 String categoryName = item.name;
-                                Intent intent = new Intent(view.getContext(), CategoryActivity.class);
                                 intent.putExtra("categoryName", categoryName);
                                 view.getContext().startActivity(intent); // Start the activity
 
                                 Toast.makeText(view.getContext(), "Clicked on category: " + categoryName, Toast.LENGTH_SHORT).show();
                             } else if (item.type == DisplayItem.ItemType.COUNTRY) {
                                 String countryName = item.name;
-                                Intent intent = new Intent(view.getContext(), CategoryActivity.class);
                                 intent.putExtra("countryName", countryName);
                                 view.getContext().startActivity(intent); // Start the activity
                                 Toast.makeText(view.getContext(), "Clicked on country: " + countryName, Toast.LENGTH_SHORT).show();

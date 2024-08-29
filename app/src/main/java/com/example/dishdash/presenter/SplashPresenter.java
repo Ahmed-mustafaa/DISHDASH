@@ -1,6 +1,8 @@
-package com.example.dishdash.view.Splash;
+package com.example.dishdash.presenter;
 
 import android.os.Handler;
+
+import com.example.dishdash.view.Splash.SplashScreenView;
 
 public class SplashPresenter implements SplashScreenView.Presenter {
 

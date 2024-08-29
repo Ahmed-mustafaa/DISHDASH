@@ -1,4 +1,4 @@
-package com.example.dishdash.view.SearchAvtivity;
+package com.example.dishdash.presenter;
 
 import com.example.dishdash.NetworkCall.MealsRemoteDataSourceImpl;
 import com.example.dishdash.NetworkCall.NetworkCallBack;
@@ -7,6 +7,8 @@ import com.example.dishdash.NetworkCall.CountryCallBack;
 import com.example.dishdash.model.Category;
 import com.example.dishdash.model.Country;
 import com.example.dishdash.model.Meal;
+import com.example.dishdash.model.Repository.MealsRepositoryImpl;
+import com.example.dishdash.view.SearchAvtivity.SearchView;
 
 
 import java.util.List;
@@ -15,10 +17,13 @@ public class SearchPresenter {
 
     private SearchView searchView;
     private MealsRemoteDataSourceImpl dataSource;
+    private MealsRepositoryImpl repository;
 
-    public SearchPresenter(SearchView view) {
+
+    public SearchPresenter(SearchView view, MealsRepositoryImpl repository) {
         this.searchView = view;
-        this.dataSource = MealsRemoteDataSourceImpl.getInstance();
+        this.repository=repository;
+
     }
 public void SearcMealByletter(String letter){
     searchView.showLoading();

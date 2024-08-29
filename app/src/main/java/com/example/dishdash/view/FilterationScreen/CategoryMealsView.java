@@ -1,4 +1,4 @@
-package com.example.dishdash.view;
+package com.example.dishdash.view.FilterationScreen;
 
 import com.example.dishdash.model.Meal;
 

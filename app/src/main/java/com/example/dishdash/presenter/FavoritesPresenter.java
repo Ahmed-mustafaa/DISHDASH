@@ -1,8 +1,6 @@
-package com.example.dishdash.view.Favorites;
+package com.example.dishdash.presenter;
 
 import android.util.Log;
-
-import androidx.lifecycle.LiveData;
 
 import androidx.lifecycle.LiveData;
 
@@ -10,7 +8,8 @@ import com.example.dishdash.model.Category;
 import com.example.dishdash.model.Meal;
 import com.example.dishdash.model.Repository.MealsRepositoryImpl;
 import com.example.dishdash.NetworkCall.NetworkCallBack;
-import com.example.dishdash.view.MealsView;
+import com.example.dishdash.view.Favorites.FavPresenter;
+import com.example.dishdash.view.Favorites.FavoritesView;
 
 import java.util.List;
 import java.util.Map;

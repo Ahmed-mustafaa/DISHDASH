@@ -31,19 +31,19 @@
             android:name=".view.CreatePlanActivity"
             android:exported="false" />
         <activity
-            android:name=".view.CategoryActivity"
+            android:name=".view.FilterationScreen.FilterationActivity"
             android:exported="false" />
         <activity
-            android:name=".view.MealDetailsActivity"
+            android:name=".view.MealDetails.MealDetailsActivity"
             android:exported="false" />
         <activity
-            android:name=".view.DashBoardActivity"
+            android:name=".view.DashBoard.DashBoardActivity"
             android:exported="false" />
         <activity
-            android:name=".view.SignUP.SignUpActivity"
+            android:name=".view.SignUP_LogIn.SignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".view.LoginActivity"
+            android:name=".view.SignUP_LogIn.LoginActivity"
             android:exported="false" />
         <activity
             android:name=".view.Splash.SplashScreen"

@@ -1,4 +1,4 @@
-package com.example.dishdash.view;
+package com.example.dishdash.view.MealDetails;
 
 import android.content.Context;
 import android.view.LayoutInflater;

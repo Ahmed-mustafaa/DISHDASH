@@ -1,4 +1,4 @@
-package com.example.dishdash.view;
+package com.example.dishdash.view.DashBoard;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -7,12 +7,10 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +18,11 @@ import com.example.dishdash.NetworkCall.NetworkListener;
 import com.example.dishdash.db.AppData;
 import com.example.dishdash.db.AppDataBase;
 import com.example.dishdash.db.MealDAO;
+import com.example.dishdash.db.MealsLocalDataSourceImpl;
+import com.example.dishdash.model.Repository.MealsRepository;
+import com.example.dishdash.model.Repository.MealsRepositoryImpl;
+import com.example.dishdash.presenter.DashBoardPresenter;
+import com.example.dishdash.view.CreatePlanActivity;
 import com.example.dishdash.view.Favorites.FavoritesActivity;
 
 import androidx.appcompat.app.AlertDialog;
@@ -39,7 +42,9 @@ import com.example.dishdash.model.Country;
 import com.example.dishdash.model.DisplayItem;
 import com.example.dishdash.model.Meal;
 import com.example.dishdash.presenter.MealsPresenter;
+import com.example.dishdash.view.FilterationScreen.CountriesAdapter;
 import com.example.dishdash.view.SearchAvtivity.SearchActivity;
+import com.example.dishdash.view.SignUP_LogIn.LoginActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -51,17 +56,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class DashBoardActivity extends AppCompatActivity implements MealsView {
+public class DashBoardActivity extends AppCompatActivity implements DashBoardView {
     private ImageView avatarImageView;
     private TextView mealName;
     private SharedPreferences sharedPreferences;
-
+private static final String TAG = "DashBoardActivity";
     private TextView mealDescription;
     private TextView greeting;
     private TextView howIsItGoing;
     private TextView todaysMeals;
     private ImageView mealImage;
-    private MealsPresenter presenter;
+    private DashBoardPresenter presenter;
     private CardView cardView;
     private LottieAnimationView progress;
     private RecyclerView recyclerView;
@@ -78,6 +83,7 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
     private boolean isFabOpen = false;
     private boolean isGuest;
     private LottieAnimationView SearchIcon;
+
     private List<DisplayItem> countryitems = new ArrayList<>();
     private List<DisplayItem> categoryitems = new ArrayList<>();
 
@@ -93,12 +99,21 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         networkListener = new NetworkListener();
+        AppData.getInstance().initialize(this);
+         userId = AppData.getInstance().getUserId();
+        if (userId == null) {
+            // Handle case where userId is null (e.g., show login prompt)
+            showLoginPrompt();
+        } else {
+            // Use userId for other operations
+            Log.i(TAG, "User ID: " + userId);
+        }
+
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(networkListener, filter);
         Intent intent = getIntent();
         isGuest = intent.getBooleanExtra("IS_GUEST", true);        setContentView(R.layout.activity_dash_board);
-        sharedPreferences = getSharedPreferences("app_prefs", MODE_PRIVATE);
-        userId = sharedPreferences.getString("user_id", null);
+
         SearchIcon = findViewById(R.id.search_icon);
         SearchIcon.setOnClickListener(v -> {
             Intent Searchintent = new Intent(DashBoardActivity.this, SearchActivity.class);
@@ -108,8 +123,6 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
         fabLogout = findViewById(R.id.fab_log_out);
         create=findViewById(R.id.home_icon);
         fabFavorites = findViewById(R.id.heart_icon); // Initialize the Favorites button
-        Animation scaleUp = AnimationUtils.loadAnimation(this, R.anim.scaleup);
-        LinearLayout FloatingActionButtons = findViewById(R.id.Linear);
 
         greeting = findViewById(R.id.user_greeting);
         howIsItGoing = findViewById(R.id.HowIsItGOing);
@@ -182,8 +195,8 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
             finish();
         });
         create.setOnClickListener(v -> {
-            AppData.getInstance().initialize(this);
-            String userId = AppData.getInstance().getUserId();
+
+
             Intent planintent = new Intent(DashBoardActivity.this, CreatePlanActivity.class);
             startActivity(planintent);
                 });
@@ -192,12 +205,13 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
 
 
         fabFavorites.setOnClickListener(v -> {
-            AppData.getInstance().initialize(this);
+
             if (AppData.getInstance().isGuest()) {
                 showLoginPrompt();
                 fabFavorites.setVisibility(View.INVISIBLE); // Hide favorites icon for guests
             } else {
                 Intent Favintent = new Intent(DashBoardActivity.this, FavoritesActivity.class);
+                Favintent.putExtra("userId", userId);
                 startActivity(Favintent);
             }
         });
@@ -217,11 +231,14 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
             }
             return true;
         });
+        MealsRepositoryImpl repository = MealsRepositoryImpl.getInstance(
+                MealsRemoteDataSourceImpl.getInstance(getApplicationContext()),
+                MealsLocalDataSourceImpl.getInstance(getApplicationContext()));
 
-        presenter = new MealsPresenter(this, new MealsRemoteDataSourceImpl());
-        presenter.getRandom();
+        presenter = new DashBoardPresenter(this, repository);
+        presenter.loadRandomMeal();
 
-        MealsRemoteDataSourceImpl.getInstance().getCountries(new CountryCallBack() {
+        MealsRemoteDataSourceImpl.getInstance(getApplicationContext()).getCountries(new CountryCallBack() {
             @Override
             public void onSuccess(List<Country> countries) {
                 runOnUiThread(() -> showAllCountries(countries));
@@ -236,7 +253,7 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
             }
         });
 
-        MealsRemoteDataSourceImpl.getInstance().getCategories(new NetworkCallBack() {
+        MealsRemoteDataSourceImpl.getInstance(getApplicationContext()).getCategories(new NetworkCallBack() {
             @Override
             public void onSuccess(Meal meal) {}
 
@@ -259,27 +276,7 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
 
         loadAvatarImage();
     }
-    private void showLoginPrompt() {
-        new AlertDialog.Builder(this)
-                .setTitle("Login Required")
-                .setMessage("You need to log in to access favorites. Do you want to log in or continue browsing?")
-                .setPositiveButton("Log In", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(DashBoardActivity.this, LoginActivity.class);
-                        startActivity(intent);
-                    }
-                })
-                .setNegativeButton("Continue Browsing", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Do nothing and dismiss the dialog
-                        dialog.dismiss();
-                    }
-                })
-                .setCancelable(true)
-                .show();
-    }
+
     private void clearSession() {
        SharedPreferences preferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
@@ -291,7 +288,7 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
    }
     private void clearLocalData() {
         AppDataBase db = AppDataBase.getInstance(this);
-        MealDAO dao = db.getProductDAO();
+        MealDAO dao = db.getFavoriteMeals();
 
         // Assuming userID is stored and accessible
         String userID = getSharedPreferences("app_prefs", MODE_PRIVATE).getString("user_id", null);
@@ -318,6 +315,7 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
 
     @Override
     public void showRandomMeal(Meal meal) {
+
         mealName.setText(meal.getStrMeal());
         String[] description = {meal.getStrCategory(), meal.getStrArea()};
         mealDescription.setText(String.join(", ", description));
@@ -329,16 +327,7 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
         dAdapter.notifyDataSetChanged();
     }
 
-    @Override
-    public void showFABOptions() {
-        fab.show();
 
-    }
-
-    @Override
-    public void hideFABOptions() {
-        fab.hide();
-    }
 
     @Override
     public void showAllCountries(List<Country> countries) {
@@ -364,8 +353,20 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
     }
 
     @Override
+    public void showAllMeals(List<Meal> meals) {
+
+    }
+
+
+    @Override
     public void showError(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+
+    @Override
+    public void showMealsRemovedFromFavorites() {
+
     }
 
     @Override
@@ -376,5 +377,26 @@ public class DashBoardActivity extends AppCompatActivity implements MealsView {
                 .collect(Collectors.toList()));
         CategoriesAdapter.setItems(categoryitems);
         recyclerView2.setAdapter(CategoriesAdapter);
+    }
+    private void showLoginPrompt() {
+        new AlertDialog.Builder(this)
+                .setTitle("Login Required")
+                .setMessage("You need to log in to access favorites. Do you want to log in or continue browsing?")
+                .setPositiveButton("Log In", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(DashBoardActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton("Continue Browsing", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Do nothing and dismiss the dialog
+                        dialog.dismiss();
+                    }
+                })
+                .setCancelable(true)
+                .show();
     }
 }

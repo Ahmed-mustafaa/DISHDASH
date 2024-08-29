@@ -13,22 +13,26 @@ import com.example.dishdash.model.Ingredient;
 import com.example.dishdash.model.IngredientDAO;
 import com.example.dishdash.model.Meal;
 
-@Database(entities = {Meal.class, Ingredient.class}, version = 2, exportSchema = false)
+@Database(entities = {Meal.class, Ingredient.class}, version = 1, exportSchema = false)
 public abstract class AppDataBase extends RoomDatabase {
-   private static volatile  AppDataBase instance = null;
-    public abstract MealDAO getProductDAO();
+   private static volatile  AppDataBase instance;
+//    public abstract MealDAO getMealDAO();
+    public abstract MealDAO getFavoriteMeals();
+
     public abstract IngredientDAO IngrdientDAO();
-
-
+    public abstract FavDAO getFavDAO();
 
     public static synchronized AppDataBase getInstance(Context context){
         if(instance == null){
-            instance = Room.databaseBuilder(context.getApplicationContext(),AppDataBase.class,"MealsDB").fallbackToDestructiveMigration().build();
+            instance = Room.databaseBuilder(context.getApplicationContext()
+                            ,AppDataBase.class,"MealsDB")
+                    .fallbackToDestructiveMigration()
+                    .build();
 
         }
         return instance;
     }
-    public abstract FavDAO getFavDAO();
+
 
     static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override

@@ -13,9 +13,13 @@ public interface MealsRepository {
     void deleteMeal(Meal meal);
     LiveData<List<Meal>> getAllMeals();
 
-    void getAllMeals(NetworkCallBack networkCallBacks);
+
+
+    void getAllMeals(NetworkCallBack networkCallBacks, String userId);
 
     LiveData<List<Meal>> getFavMeals(String userId, NetworkCallBack networkCallBacks);
 
     void updateMeal(Meal meal);
+
+//    void loadRandomMeal(NetworkCallBack networkCallBacks);
 }

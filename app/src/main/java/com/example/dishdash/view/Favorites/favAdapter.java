@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -92,8 +91,8 @@ public class favAdapter extends RecyclerView.Adapter<favAdapter.ViewHolder> {
             Country = convertView.findViewById(R.id.Country);
             Category = convertView.findViewById(R.id.Category);
             thumb = convertView.findViewById(R.id.productImage);
-            DeleteFromFav = convertView.findViewById(R.id.deleteButton);
-            //  Add = convertView.findViewById(R.id.Add);
+            DeleteFromFav = convertView.findViewById(R.id.RemoveButton);
+            Add = convertView.findViewById(R.id.Add);
             card = convertView.findViewById(R.id.card);
 
         }

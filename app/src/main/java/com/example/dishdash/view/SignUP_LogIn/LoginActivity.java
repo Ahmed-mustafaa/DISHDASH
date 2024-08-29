@@ -1,7 +1,6 @@
-    package com.example.dishdash.view;
+    package com.example.dishdash.view.SignUP_LogIn;
 
     import android.content.Intent;
-    import android.content.SharedPreferences;
     import android.os.Bundle;
     import android.util.Log;
     import android.widget.Button;
@@ -13,8 +12,7 @@
 
     import com.example.dishdash.R;
     import com.example.dishdash.db.AppData;
-    import com.example.dishdash.view.Favorites.FavoritesActivity;
-    import com.example.dishdash.view.SignUP.SignUpActivity;
+    import com.example.dishdash.view.DashBoard.DashBoardActivity;
     import com.google.android.gms.auth.api.signin.GoogleSignIn;
     import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
     import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -32,7 +30,7 @@
     public class LoginActivity extends AppCompatActivity {
         private static final int RC_SIGN_IN =9001 ;
         private TextView signLink;
-        TextInputEditText name, password;
+        TextInputEditText name, password ,email;
 
         private TextInputLayout nameLayout, passwordLayout;
         Button login;
@@ -48,6 +46,7 @@
             super.onCreate(savedInstanceState);
 
             setContentView(R.layout.activity_login);
+
             name = findViewById(R.id.name);
             password = findViewById(R.id.password);
             nameLayout = findViewById(R.id.name_layout);
@@ -60,14 +59,13 @@
                     .requestIdToken(getString(R.string.default_web_client_id))
                     .requestEmail()
                     .build();
-
             mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-
             login.setOnClickListener(v -> {
-                String Name = name.getText().toString();
+                String email = name.getText().toString();
                 String Password = password.getText().toString();
-                signInWithEmailPassword(Name, Password);
+                Log.i(TAG, "name and password: " + email + Password);
+                signInWithEmailPassword(email, Password);
+
 
             });
             continueAsGuestButton.setOnClickListener(v -> {
@@ -96,19 +94,22 @@
                 startActivityForResult(signInIntent, RC_SIGN_IN);
             }
         private void signInWithEmailPassword(String email, String password) {
+            email = email.trim();
+            password = password.trim();
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, task -> {
                         if (task.isSuccessful()) {
                             FirebaseUser user = mAuth.getCurrentUser();
-                            if (user != null) {
+                            try {
                                 String userId = user.getUid();
                                 AppData.getInstance().setUserId(userId);
                                 AppData.getInstance().setGuest(false);
-                                SharedPreferences sharedPreferences = getSharedPreferences("app_prefs", MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString("user_id", userId);
-                                editor.apply();
-                                Log.i(TAG, "signInWithEmailPassword: " + userId);
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                            updateUI(user);
+
+                            if (user != null) {
                                 Intent intent = new Intent(LoginActivity.this, DashBoardActivity.class);
                                 startActivity(intent);
                                 finish();
@@ -117,20 +118,13 @@
                             Toast.makeText(this, "Login Failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
-        }
 
-        private void clearPreviousSession() {
-            SharedPreferences preferences = getSharedPreferences("app_prefs", MODE_PRIVATE);
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.clear(); // Clear all stored data
-            editor.apply();
         }
 
         @Override
         protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
 
-            // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
             if (requestCode == RC_SIGN_IN) {
                 Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
                 try {
@@ -155,10 +149,7 @@
                                 String userId = user.getUid();
                                 AppData.getInstance().setUserId(userId);
                                 AppData.getInstance().setGuest(false);
-                                SharedPreferences sharedPreferences = getSharedPreferences("app_prefs", MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString("user_id", userId);
-                                editor.apply();
+
                                 Log.i(TAG, "firebaseAuthWithGoogle: "+userId );
                                 Toast.makeText(this, "Authentication Successful.", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(LoginActivity.this, DashBoardActivity.class);
@@ -171,12 +162,23 @@
                             Toast.makeText(this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
                         }
                     });
+            }
+        private void updateUI(FirebaseUser user) {
+            if (user != null) {
+                // User is signed in
+                // Perform UI updates for signed-in users
+                // Example: Hide sign-in button, show welcome message, etc.
+                name.setText(user.getEmail()); // Set the email field with the user's email
+                password.setText(null); // Clear the password field
+                Toast.makeText(this, "Signed in as " + user.getEmail(), Toast.LENGTH_SHORT).show();
+            } else {
+
+                name.setText(null); // Clear the email field
+                password.setText(null); // Clear the password field
+                Toast.makeText(this, "Signed out", Toast.LENGTH_SHORT).show();
+            }
         }
 
-
-
-
-
-        }
+    }
 
         

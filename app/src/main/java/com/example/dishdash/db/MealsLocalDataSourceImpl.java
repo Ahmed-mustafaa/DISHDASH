@@ -18,7 +18,8 @@ public class MealsLocalDataSourceImpl implements MealsLocalDataSource {
             throw new NullPointerException("Context is null in MealsLocalDataSourceImpl");
         }
             AppDataBase db = AppDataBase.getInstance(context.getApplicationContext());
-        mealDAO = db.getProductDAO();
+        //mealDAO = db.getMealDAO();
+        mealDAO = db.getFavoriteMeals();
         favDAO = db.getFavDAO();
 
 
@@ -60,7 +61,7 @@ public class MealsLocalDataSourceImpl implements MealsLocalDataSource {
 
     @Override
     public FavDAO favDAO() {
-        return null;
+        return favDAO;
     }
 
     @Override

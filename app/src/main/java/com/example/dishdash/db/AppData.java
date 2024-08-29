@@ -1,20 +1,26 @@
 package com.example.dishdash.db;
 
-import static androidx.core.content.ContextCompat.startActivity;
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 
 import androidx.appcompat.app.AlertDialog;
 
-import com.example.dishdash.view.DashBoardActivity;
-import com.example.dishdash.view.LoginActivity;
+import com.example.dishdash.view.SignUP_LogIn.LoginActivity;
 
 public class AppData {
     private static AppData instance;
     private boolean isGuest;
     private Context context; // Add a context field
+    boolean isNetworkAvailable = true;
+
+    public boolean isNetworkAvailable() {
+        return isNetworkAvailable;
+    }
+
+    public void setNetworkAvailable(boolean networkAvailable) {
+        isNetworkAvailable = networkAvailable;
+    }
 
     public String getUserId() {
         return userId;

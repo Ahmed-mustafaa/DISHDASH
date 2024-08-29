@@ -1,10 +1,8 @@
 package com.example.dishdash.view.SearchAvtivity;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -15,12 +13,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.example.dishdash.NetworkCall.MealsRemoteDataSourceImpl;
 import com.example.dishdash.R;
+import com.example.dishdash.db.MealsLocalDataSourceImpl;
 import com.example.dishdash.model.Category;
 import com.example.dishdash.model.Country;
 import com.example.dishdash.model.DisplayItem;
 import com.example.dishdash.model.Meal;
-import com.example.dishdash.view.CountriesAdapter;
+import com.example.dishdash.model.Repository.MealsRepositoryImpl;
+import com.example.dishdash.presenter.SearchPresenter;
+import com.example.dishdash.view.FilterationScreen.CountriesAdapter;
 import com.example.dishdash.view.MealsAdapter;
 import com.google.android.material.chip.Chip;
 
@@ -32,6 +34,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView {
 private static final String TAG = "SearchActivity";
     private Chip countryChip;
     private Chip categoryChip;
+    String userId;
     private SearchPresenter searchPresenter;
     private List<DisplayItem> countryitems = new ArrayList<>();
     private List<DisplayItem> categoryitems = new ArrayList<>();
@@ -61,6 +64,9 @@ searchEditText = findViewById(R.id.searchBar);
         recyclerView1.setHasFixedSize(true);
         recyclerView2.setHasFixedSize(true);
         recyclerView3.setHasFixedSize(true);
+        CategoriesAdapter = new CountriesAdapter(SearchActivity.this, categoryitems);
+        recyclerView2.setAdapter(CategoriesAdapter);
+
         recyclerView1.setLayoutManager(new LinearLayoutManager(this));
         recyclerView2.setLayoutManager(new LinearLayoutManager(this));
         recyclerView3.setLayoutManager(new GridLayoutManager(this,2));
@@ -68,16 +74,16 @@ searchEditText = findViewById(R.id.searchBar);
         recyclerView2.setVisibility(View.GONE);
         recyclerView3.setVisibility(View.GONE);
         recyclerView1.setAdapter(dAdapter);
-        recyclerView2.setAdapter(CategoriesAdapter);
         recyclerView3.setAdapter(mealsAdapter);
-        mealsAdapter = new MealsAdapter(SearchActivity.this, new ArrayList<>(), true);
+        mealsAdapter = new MealsAdapter(SearchActivity.this, new ArrayList<>(), true,userId);
         dAdapter = new CountriesAdapter(SearchActivity.this, countryitems);
-        CategoriesAdapter = new CountriesAdapter(SearchActivity.this, categoryitems);
 
         progress = findViewById(R.id.progress);
         progress.setVisibility(View.GONE);
-        searchPresenter = new SearchPresenter(this);
-
+        MealsRemoteDataSourceImpl remoteDataSource = new MealsRemoteDataSourceImpl(getApplicationContext());
+        MealsLocalDataSourceImpl localDataSource = MealsLocalDataSourceImpl.getInstance(this);
+        MealsRepositoryImpl repository = MealsRepositoryImpl.getInstance(remoteDataSource, localDataSource);
+        searchPresenter = new SearchPresenter(this,repository);
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}

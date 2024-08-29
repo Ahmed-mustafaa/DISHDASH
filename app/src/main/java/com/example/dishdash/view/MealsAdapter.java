@@ -1,9 +1,7 @@
 package com.example.dishdash.view;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,16 +12,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import androidx.fragment.app.FragmentContainerView;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.dishdash.R;
+import com.example.dishdash.db.AppData;
 import com.example.dishdash.model.Meal;
+import com.example.dishdash.view.MealDetails.MealDetailsActivity;
 
 import java.util.List;
 
@@ -32,13 +27,15 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.ViewHolder> 
 
     private List<Meal> meals;
     boolean isCategoryMeals = false;
+    String userId;
 
     private static final String TAG = "Adapter";
 
-    public MealsAdapter(AppCompatActivity mContext, List<Meal> meals, boolean isCategoryMeals) {
+    public MealsAdapter(AppCompatActivity mContext, List<Meal> meals, boolean isCategoryMeals,String userId) {
         this.mContext = mContext;
         this.meals = meals;
         this.isCategoryMeals = isCategoryMeals;
+        this.userId = userId;
     }
 
 
@@ -81,6 +78,10 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.ViewHolder> 
             Log.i(TAG, "Meal ID : " + mealId);
             Intent intent = new Intent(v.getContext(), MealDetailsActivity.class);
             intent.putExtra("mealId", mealId);
+            String userId = AppData.getInstance().getUserId();
+            intent.putExtra("userId", userId); // Add userId to Intent
+
+
             v.getContext().startActivity(intent);
 
         });
@@ -108,8 +109,22 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.ViewHolder> 
                 MealName = itemView.findViewById(R.id.category_name);
                 categoryI_Img = itemView.findViewById(R.id.categoryI_Img);
                 itemView.findViewById(R.id.heart_icon);
+            itemView.setOnClickListener(v -> {
+                Log.i(TAG, "Item clicked: " + getAdapterPosition());
+                int mealId = Integer.parseInt(meals.get(getAdapterPosition()).getIdMeal());
+                Log.i(TAG, "Meal ID : " + mealId);
 
-            }
+                Intent intent = new Intent(v.getContext(), MealDetailsActivity.class);
+                intent.putExtra("mealId", mealId);
+
+                // Get userId from AppData
+                String userId = AppData.getInstance().getUserId();
+                intent.putExtra("userId", userId); // Add userId to Intent
+
+                v.getContext().startActivity(intent);
+            });
+        }
+
 
 
 
